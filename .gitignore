@@ -5,3 +5,4 @@ output.*
 .gradle/*
 gradle/*
 /build/
+/bin/

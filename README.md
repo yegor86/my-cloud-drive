@@ -3,9 +3,13 @@
 ## Install environment
 * Download and Install JDK 1.8 - http://www.oracle.com/technetwork/java/javase/downloads/index.html
 * Download and Install Oracle Virtual Box - https://www.virtualbox.org/wiki/Downloads
+* Download and Install Gradle - https://gradle.org/gradle-download/
+..1. Download and unzip gradle-x.x foder
+..2. Add gradle-x.x/bin as executable PATH
 * Install vagrant http://docs.vagrantup.com/v2/installation/
 * Restart your computer
-* Install Lunix: Go to src/etc/vagrant and execute <code> vagrant up </code> on this folder
+* Install Lunix: Go to src/etc/vagrant and execute the following command on this folder
+	<code>$ vagrant up </code>
 * Apply migrations: Go to the project directory and execute
 	<code>$ gradle flywayMigrate -i</code>
 * Check that linux is up and running
