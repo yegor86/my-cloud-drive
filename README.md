@@ -2,11 +2,11 @@
 
 ## Install environment
 1. Download and Install JDK 1.8 - http://www.oracle.com/technetwork/java/javase/downloads/index.html.
-2. Download and Install Oracle Virtual Box - https://www.virtualbox.org/wiki/Downloads
-3. Download and Install Gradle - https://gradle.org/gradle-download/
+2. Download and Install Gradle - https://gradle.org/gradle-download/
 
 	* Download and unzip gradle-x.x foder
 	* Add gradle-x.x/bin in executable %PATH%
+3. Download and Install Oracle Virtual Box - https://www.virtualbox.org/wiki/Downloads
 4. Install vagrant http://docs.vagrantup.com/v2/installation/
 5. Restart your computer
 6. Install Lunix: Go to src/etc/vagrant and execute the following command on this folder
@@ -21,6 +21,7 @@
 9. Check that tables were created (Credentials: mydrive/mydrive):
 
 	<code>$ psql -h localhost -p 5432 -U mydrive</code>
+	
 	<code>mydrive=> \dt</code>
 
 ## Run application
