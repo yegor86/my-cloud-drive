@@ -25,9 +25,10 @@
 	<code>mydrive=> \dt</code>
 
 ## Run application
-1. Go to the project directory and start the server
-
-	<code>gradlew bootRun</code>
+1. Go to the project directory and generate executable file
+    <code>$ gradle wrapper</code>
+2. Start server
+    <code>$ gradlew bootRun</code>
 2. Check it works on port 3030: Follow the address
 
 	<code>localhost:3030</code>

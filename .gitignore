@@ -1,6 +1,8 @@
 .classpath
 .project
 output.*
+gradlew.bat
+gradlew
 .settings/*
 .gradle/*
 gradle/*
