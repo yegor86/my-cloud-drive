@@ -37,7 +37,8 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-jdbc")
     //compile("org.springframework.boot:spring-boot-starter-security")
     compile("org.springframework.boot:spring-boot-starter-web")
-		    
+    
+    compile("commons-lang:commons-lang:2.6")
     runtime("org.postgresql:postgresql:9.4-1201-jdbc41")
     testCompile("org.springframework.boot:spring-boot-starter-test") 
 }
