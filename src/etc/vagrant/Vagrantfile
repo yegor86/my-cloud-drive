@@ -6,18 +6,39 @@ echo I am provisioning...
 date > /etc/vagrant_provisioned_at
 SCRIPT
 
+
 Vagrant.configure("2") do |config|
   config.vm.provision "shell", inline: $script
-end
 
-Vagrant::Config.run do |config|
-  config.vm.box = "ubuntu/trusty64"
-  config.vm.box_url = "https://atlas.hashicorp.com/ubuntu/boxes/trusty64"
-  config.vm.host_name = "postgresql" 
+  config.vm.define "default" do |postgress|
+    postgress.vm.box = "ubuntu/trusty64"
+    postgress.vm.box_url = "https://atlas.hashicorp.com/ubuntu/boxes/trusty64"
+    postgress.vm.host_name = "postgresql"
 
-  config.vm.share_folder "bootstrap", "/mnt/bootstrap", ".", :create => true
-  config.vm.provision :shell, :path => "Vagrant-setup/bootstrap.sh"
-  
-  # PostgreSQL Server port forwarding
-  config.vm.forward_port 5432, 5432
+    postgress.vm.synced_folder "Vagrant-setup", "/mnt/bootstrap", :create => true
+    postgress.vm.provision :shell, :path => "Vagrant-setup/bootstrap.sh"
+
+    # PostgreSQL Server port forwarding
+    postgress.vm.network "forwarded_port", guest: 5432, host: 5432
+    postgress.vm.network "private_network", ip: "192.168.205.10"
+  end
+
+  config.vm.define "server1" do |server1|
+    server1.vm.box = "ubuntu/trusty64"
+    server1.vm.box_url = "https://atlas.hashicorp.com/ubuntu/boxes/trusty64"
+    server1.vm.host_name = "server1"
+
+    server1.vm.synced_folder "Vagrant-setup", "/mnt/bootstrap", :create => true
+    server1.vm.provision :shell, :path => "Vagrant-setup/hadoop_cluster.sh"
+
+    server1.vm.network  "private_network", ip: "192.168.205.11"
+  end
+
+  config.vm.define "server2" do |server2|
+    server2.vm.box = "ubuntu/trusty64"
+    server2.vm.box_url = "https://atlas.hashicorp.com/ubuntu/boxes/trusty64"
+    server2.vm.host_name = "server2"
+
+    server2.vm.network "private_network", ip: "192.168.205.12"
+  end
 end
