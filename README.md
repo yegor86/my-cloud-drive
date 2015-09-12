@@ -39,21 +39,21 @@
 4. Check that linux is up and running
     
     <code>$ vagrant ssh web</code>
-5. Check that docker container is up and running. Copy <container-id>  from the ps command output  
+5. Check that docker container is up and running. Copy [container-id]  from the ps command output  
 
     <code>$ docker ps</code>
 
 6. Connect to the running container
     
-    <code>$ docker exec -it <container-id> bash</code>
+    <code>$ docker exec -it [container-id] bash</code>
 
 #### To rebuild the container
 1. Stop the container 
 
-    <code>$ docker stop <container-id></code>
+    <code>$ docker stop [container-id]</code>
 2. Remove the container
     
-    <code>$ docker stop <container-id></code>
+    <code>$ docker stop [container-id]</code>
 3. Build the container
 
     <code>$ docker build -t my-cloud-drive /mnt/bootstrap/web"</code>
