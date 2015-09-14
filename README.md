@@ -53,7 +53,7 @@
     <code>$ docker stop [container-id]</code>
 2. Remove the container
     
-    <code>$ docker stop [container-id]</code>
+    <code>$ docker rm [container-id]</code>
 3. Build the container
 
     <code>$ docker build -t my-cloud-drive /mnt/bootstrap/web"</code>
