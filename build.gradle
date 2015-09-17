@@ -39,9 +39,16 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
     
     compile("commons-lang:commons-lang:2.6")
+    compile "org.apache.hadoop:hadoop-client:2.7.1"
     runtime("org.postgresql:postgresql:9.4-1201-jdbc41")
-    testCompile("org.springframework.boot:spring-boot-starter-test") 
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+
 }
+
+configurations {
+    compile.exclude group:'ch.qos.logback'
+}
+
 
 dependencyManagement {
 	imports { 
