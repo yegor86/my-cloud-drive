@@ -18,6 +18,6 @@ See also:
 
 [Running Hadoop cluster](https://github.com/yegor86/my-cloud-drive/blob/master/docs/Hadoop.md)
 
-[Run application locally](https://github.com/yegor86/my-cloud-drive/blob/master/docs/RunLocally.md.md)
+[Make server executable](https://github.com/yegor86/my-cloud-drive/blob/master/docs/MakeExecutable.md)
 
 [Troubleshooting Guide](https://github.com/yegor86/my-cloud-drive/blob/master/docs/TroubleshootingGuide.md)
