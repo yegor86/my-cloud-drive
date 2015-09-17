@@ -12,12 +12,12 @@
 
 See also:
 
-[##Install VM with DB](https://github.com/yegor86/my-cloud-drive/blob/master/docs/Database.md)
+[Install VM with DB](https://github.com/yegor86/my-cloud-drive/blob/master/docs/Database.md)
 
-[##Install VM with Web Server](https://github.com/yegor86/my-cloud-drive/blob/master/docs/WebServer.md)
+[Install VM with Web Server](https://github.com/yegor86/my-cloud-drive/blob/master/docs/WebServer.md)
 
-[##Running Hadoop cluster](https://github.com/yegor86/my-cloud-drive/blob/master/docs/Hadoop.md)
+[Running Hadoop cluster](https://github.com/yegor86/my-cloud-drive/blob/master/docs/Hadoop.md)
 
-[##Run application locally](https://github.com/yegor86/my-cloud-drive/blob/master/docs/RunLocally.md.md)
+[Run application locally](https://github.com/yegor86/my-cloud-drive/blob/master/docs/RunLocally.md.md)
 
-[##Troubleshooting Guide](https://github.com/yegor86/my-cloud-drive/blob/master/docs/TroubleshootingGuide.md)
+[Troubleshooting Guide](https://github.com/yegor86/my-cloud-drive/blob/master/docs/TroubleshootingGuide.md)
