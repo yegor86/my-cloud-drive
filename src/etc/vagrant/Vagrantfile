@@ -40,22 +40,32 @@ Vagrant.configure("2") do |config|
     container.vm.network "private_network", ip: "192.168.205.13"
   end
 
-  config.vm.define "server1" do |server1|
-    server1.vm.box = "ubuntu/trusty64"
-    server1.vm.box_url = "https://atlas.hashicorp.com/ubuntu/boxes/trusty64"
-    server1.vm.host_name = "server1"
+  config.vm.define "slave1" do |slave1|
+    slave1.vm.box = "ubuntu/trusty64"
+    slave1.vm.box_url = "https://atlas.hashicorp.com/ubuntu/boxes/trusty64"
+    slave1.vm.host_name = "slave1"
 
-    server1.vm.synced_folder "Vagrant-setup", "/mnt/bootstrap", :create => true
-    server1.vm.provision :shell, :path => "Vagrant-setup/hadoop_cluster.sh"
+    slave1.vm.synced_folder "Vagrant-setup", "/mnt/bootstrap", :create => true
+    slave1.vm.provision :shell, :path => "Vagrant-setup/hadoop_slave_new.sh"
 
-    server1.vm.network  "private_network", ip: "192.168.205.11"
+    slave1.vm.network "private_network", ip: "192.168.205.12"
   end
 
-  config.vm.define "server2" do |server2|
-    server2.vm.box = "ubuntu/trusty64"
-    server2.vm.box_url = "https://atlas.hashicorp.com/ubuntu/boxes/trusty64"
-    server2.vm.host_name = "server2"
+  config.vm.define "master" do |master|
+    master.vm.box = "ubuntu/trusty64"
+    master.vm.box_url = "https://atlas.hashicorp.com/ubuntu/boxes/trusty64"
+    master.vm.host_name = "master"
 
-    server2.vm.network "private_network", ip: "192.168.205.12"
+    master.vm.synced_folder "Vagrant-setup", "/mnt/bootstrap", :create => true
+    master.vm.provision :shell, :path => "Vagrant-setup/hadoop_master_new.sh"
+
+    master.vm.network  "private_network", ip: "192.168.205.11"
   end
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.customize ["modifyvm", :id, "--memory", "2048"]
+  end
+
+
+
 end
