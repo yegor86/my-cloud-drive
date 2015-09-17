@@ -14,13 +14,12 @@
 5. Start DFS
 
     <code>$ bash /home/hadoopuser/hadoop/sbin/start-dfs.sh</code>
-6. Make sure you're able to see name and data nodes
+6. Make sure you're able to see:
    * DataNode
    * NameNode
    * SecondaryNameNode
-   by running command 
-
-    <code>$ jps </code> you shoud see
+   
+    <code>$ jps </code>
 7. Start Yarn
 
     <code>$ bash /home/hadoopuser/hadoop/sbin/start-yarn.sh </code>
