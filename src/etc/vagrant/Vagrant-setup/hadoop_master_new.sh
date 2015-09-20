@@ -46,7 +46,8 @@ ssh-keyscan 192.168.205.12 >> /home/hadoopuser/.ssh/known_hosts
 
 #unpack hadoop
 cd /home/hadoopuser
-wget http://www.webhostingjams.com/mirror/apache/hadoop/core/stable/hadoop-2.7.1.tar.gz
+wget http://www.eu.apache.org/dist/hadoop/core/hadoop-2.7.1/hadoop-2.7.1.tar.gz
+
 #cp /mnt/bootstrap/hadoop-2.7.1.tar.gz /home/hadoopuser/
 tar xvf hadoop-2.7.1.tar.gz
 mv hadoop-2.7.1 hadoop
