@@ -1,5 +1,3 @@
-# Installation guide
-
 ## Prerequisites
 1. Download and Install [JDK 1.8](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
 2. Download and Install [Gradle](https://gradle.org/gradle-download/)
