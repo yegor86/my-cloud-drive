@@ -19,4 +19,4 @@
     <code>$ docker build -t my-cloud-drive /mnt/bootstrap/web"</code>
 4. Run docker container again from shell
     
-    <code>$ docker run -d -p 3030 --net="host" my-cloud-drive</code>
+    <code>$ docker run -d -p 3030:3030 --net="host" my-cloud-drive</code>
