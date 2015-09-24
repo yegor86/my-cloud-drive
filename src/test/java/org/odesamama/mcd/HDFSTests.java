@@ -73,6 +73,9 @@ public class HDFSTests {
 
     @Test
     public void listFiles() throws URISyntaxException, IOException {
+        //write at least one file to system
+        writeAndReadFilesToHDFS();
+        //System.setProperty("HADOOP_HOME", "/home/hadoopuser/hadoop");
         System.setProperty("HADOOP_USER_NAME", "hadoopuser");
 
         Configuration conf = new Configuration();

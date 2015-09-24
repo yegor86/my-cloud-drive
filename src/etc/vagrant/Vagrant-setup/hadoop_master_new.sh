@@ -19,6 +19,15 @@ sudo apt-get -y install dos2unix
 
 sudo update-java-alternatives -s java-8-oracle
 
+#copy sripst to run at startup and shutdown
+cp /mnt/bootstrap/hadoop_files/rc.local /etc/rc.local
+dos2unix /mnt/bootstrap/hadoop_files/rc.local /etc/rc.local
+chmod +x /etc/rc.local
+
+cp /mnt/bootstrap/hadoop_files/K99stophadoop.sh /etc/rc6.d/K99stophadoop.sh
+dos2unix /mnt/bootstrap/hadoop_files/K99stophadoop.sh /etc/rc6.d/K99stophadoop.sh
+chmod +x /etc/rc6.d/K99stophadoop.sh
+
 # Create hadoopgroup
 sudo addgroup hadoopgroup
 # Create hadoopuser user
@@ -81,5 +90,10 @@ cp /mnt/bootstrap/hadoop_files/yarn-site.xml /home/hadoopuser/hadoop/etc/hadoop/
 dos2unix /mnt/bootstrap/hadoop_files/yarn-site.xml /home/hadoopuser/hadoop/etc/hadoop/yarn-site.xml
 cp /mnt/bootstrap/hadoop_files/slaves /home/hadoopuser/hadoop/etc/hadoop/slaves
 dos2unix /mnt/bootstrap/hadoop_files/slaves /home/hadoopuser/hadoop/etc/hadoop/slaves
+
+bash /home/hadoopuser/hadoop/bin/hdfs namenode -format
+
+bash /home/hadoopuser/hadoop/sbin/start-dfs.sh
+bash /home/hadoopuser/hadoop/sbin/start-yarn.sh
 
 EOF

@@ -2,25 +2,11 @@
 1. Run 2 servers
 
     <code>$ vagrant up slave1 master </code>
-2. Login to master
+2. Auto start is not working at first time(don't know reason) need to halt system and then run it again
 
-    <code>$ vagrant ssh master </code>
-3. Change user to hadoopuser --password=password
+    <code>$ vagrant halt </code>
+    <code>$ vagrant up slave1 master </code>
 
-    <code>$ su hadoopuser </code>
-4. Format namenode
+3. Up time is about 2 minutes
 
-    <code>$ hdfs namenode -format</code>
-5. Start DFS
-
-    <code>$ bash /home/hadoopuser/hadoop/sbin/start-dfs.sh</code>
-6. Make sure you're able to see:
-   * DataNode
-   * NameNode
-   * SecondaryNameNode
-   
-    <code>$ jps </code>
-7. Start Yarn
-
-    <code>$ bash /home/hadoopuser/hadoop/sbin/start-yarn.sh </code>
-8. if everything is ok you can visit http://192.168.205.11:8088/cluster/nodes and see 2 active nodes
+4. if everything is ok you can visit http://192.168.205.11:8088/cluster/nodes and see 2 active nodes
