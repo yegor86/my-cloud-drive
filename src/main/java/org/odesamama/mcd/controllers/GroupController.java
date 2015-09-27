@@ -22,7 +22,7 @@ public class GroupController {
     private GroupRepository groupRepository;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public Iterable<Group> getUserList() {
+    public Iterable<Group> getGroupList() {
         return groupRepository.findAll();
     }
 }
