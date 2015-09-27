@@ -1,33 +1,38 @@
 package org.odesamama.mcd.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import java.util.List;
+
 @Entity
 @Table(name="users")
 public class User {
-    private Long userId;
-
-    private String userUid;
-
-    private String userName;
-
-    private String userEmail;
 
     @Id
     @Column(name = "user_id")
     @SequenceGenerator(name = "users_seq_gen", sequenceName = "user_id_seq")
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "users_seq_gen")
+    private Long userId;
+
+    @Column(name = "user_uid")
+    private String userUid;
+
+    @Column(name = "user_name")
+    private String userName;
+
+    @Column(name = "user_email")
+    private String userEmail;
+
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<File> fileList;
+
+
     public Long getUserId() {
         return userId;
     }
@@ -36,7 +41,6 @@ public class User {
         this.userId = userId;
     }
 
-    @Column(name = "user_uid")
     public String getUserUid() {
         return userUid;
     }
@@ -45,7 +49,6 @@ public class User {
         this.userUid = userUid;
     }
 
-    @Column(name = "user_name")
     public String getUserName() {
         return userName;
     }
@@ -54,7 +57,6 @@ public class User {
         this.userName = userName;
     }
 
-    @Column(name = "user_email")
     public String getUserEmail() {
         return userEmail;
     }
@@ -66,6 +68,14 @@ public class User {
     @Transient
     public boolean isNew() {
         return userId == null;
+    }
+
+    public List<File> getFileList() {
+        return fileList;
+    }
+
+    public void setFileList(List<File> fileList) {
+        this.fileList = fileList;
     }
 
     @Override
