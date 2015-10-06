@@ -1,8 +1,8 @@
 ### Install VM with DB
-1. Go to _src/etc/vagrant_ and execute the following command on this folder
+1. Run VM with Database
 
 	<code>$ vagrant up db</code>
-2. Apply migrations: Go to the project directory and execute
+2. Apply migrations
 
 	<code>$ gradle flywayMigrate -i</code>
 3. Check that linux is up and running

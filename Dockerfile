@@ -1,6 +1,6 @@
 FROM java:8
 VOLUME /tmp
 EXPOSE 3030
-ADD my-cloud-drive-0.0.1-SNAPSHOT.jar app.jar
+ADD build/libs/my-cloud-drive-0.0.1-SNAPSHOT.jar app.jar
 RUN bash -c 'touch /app.jar'
 ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]

@@ -14,3 +14,6 @@ See [Get SSH working on Vagrant/Windows/Git](https://gist.github.com/haf/2843680
     <code>$ VBoxManage controlvm <uuid> poweroff </code>
     
     <code>$ VBoxManage unregistervm <uuid> </code>
+    
+### Delete a virtualbox machine in the GURU_MEDITATION error state
+* Kill the VBoxHeadless process which holds your app port and run "vagrant destroy"

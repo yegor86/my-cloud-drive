@@ -28,7 +28,7 @@ Vagrant.configure("2") do |config|
     container.vm.box_url = "https://atlas.hashicorp.com/ubuntu/boxes/trusty64"
     container.vm.host_name = "webapp"
     
-    container.vm.synced_folder "Vagrant-setup", "/mnt/bootstrap/web", :create => true
+    container.vm.synced_folder ".", "/mnt/bootstrap/web", :create => true
     container.vm.provision "docker" do |d|
         d.build_image "/mnt/bootstrap/web",
             args: "-t my-cloud-drive"
