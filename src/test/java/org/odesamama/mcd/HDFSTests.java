@@ -1,23 +1,26 @@
 package org.odesamama.mcd;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.LocatedFileStatus;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.RemoteIterator;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
-import org.apache.hadoop.security.UserGroupInformation;
-import org.apache.hadoop.util.Progressable;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-
-import java.io.*;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 /**
  * Created by starnakin on 17.09.2015.
@@ -39,52 +42,51 @@ public class HDFSTests {
         System.setProperty("HADOOP_USER_NAME", "hadoopuser");
 
         Configuration conf = new Configuration();
-
-        FileSystem fileSystem = FileSystem.get(new URI(nameNodeUrl), conf);
-        System.out.println(nameNodeUrl);
-
-        if (fileSystem instanceof DistributedFileSystem) {
-            System.out.println("HDFS is the underlying filesystem");
-        } else {
-            System.out.println("Other type of file system " + fileSystem.getClass());
-        }
-
-        //save file
+        // save file
         String fileName = System.currentTimeMillis() + ".txt";
         Path file = new Path(nameNodeUrl + filePath + fileName);
-        OutputStream os = fileSystem.create(file, () -> System.out.println("File written"));
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
 
-        bw.write("Test content");
-        bw.close();
-        fileSystem.close();
+        try (FileSystem fileSystem = FileSystem.get(new URI(nameNodeUrl), conf)) {
+            System.out.println(nameNodeUrl);
 
-        //read file
-        fileSystem = FileSystem.get(new URI(nameNodeUrl), conf);
-        BufferedReader br = new BufferedReader(new InputStreamReader(fileSystem.open(file)));
-        String line = br.readLine();
-        while (line != null) {
-            System.out.println(line);
-            line = br.readLine();
+            if (fileSystem instanceof DistributedFileSystem) {
+                System.out.println("HDFS is the underlying filesystem");
+            } else {
+                System.out.println("Other type of file system " + fileSystem.getClass());
+            }
+
+            OutputStream os = fileSystem.create(file, () -> System.out.println("File written"));
+            try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"))) {
+                bw.write("Test content");
+            }
         }
-        br.close();
-        fileSystem.close();
+
+        // read file
+        try (FileSystem fileSystem = FileSystem.get(new URI(nameNodeUrl), conf)) {
+
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(fileSystem.open(file)))) {
+                String line = br.readLine();
+                while (line != null) {
+                    System.out.println(line);
+                    line = br.readLine();
+                }
+            }
+        }
     }
 
     @Test
     public void listFiles() throws URISyntaxException, IOException {
-        //write at least one file to system
-        writeAndReadFilesToHDFS();
-        //System.setProperty("HADOOP_HOME", "/home/hadoopuser/hadoop");
+
+        // System.setProperty("HADOOP_HOME", "/home/hadoopuser/hadoop");
         System.setProperty("HADOOP_USER_NAME", "hadoopuser");
 
         Configuration conf = new Configuration();
 
         FileSystem fileSystem = FileSystem.get(new URI(nameNodeUrl), conf);
 
-        RemoteIterator<LocatedFileStatus> fileStatusListIterator = fileSystem.listFiles(
-                new Path(nameNodeUrl + filePath), true);
-        while(fileStatusListIterator.hasNext()){
+        RemoteIterator<LocatedFileStatus> fileStatusListIterator = fileSystem
+                .listFiles(new Path(nameNodeUrl + filePath), true);
+        while (fileStatusListIterator.hasNext()) {
             LocatedFileStatus fileStatus = fileStatusListIterator.next();
             System.out.println(fileStatus.getPath());
         }
