@@ -59,6 +59,7 @@ Vagrant.configure("2") do |config|
     master.vm.synced_folder "Vagrant-setup", "/mnt/bootstrap", :create => true
     master.vm.provision :shell, :path => "Vagrant-setup/hadoop_master_new.sh"
 
+    master.vm.network "forwarded_port", guest: 8088, host: 8088
     master.vm.network  "private_network", ip: "192.168.205.11"
   end
 
