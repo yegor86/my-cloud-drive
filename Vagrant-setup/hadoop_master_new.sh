@@ -94,6 +94,6 @@ dos2unix /mnt/bootstrap/hadoop_files/slaves /home/hadoopuser/hadoop/etc/hadoop/s
 bash /home/hadoopuser/hadoop/bin/hdfs namenode -format
 
 bash /home/hadoopuser/hadoop/sbin/start-dfs.sh
-bash /home/hadoopuser/hadoop/sbin/start-yarn.sh
-
 EOF
+
+sudo -u hadoopuser bash /home/hadoopuser/hadoop/sbin/start-yarn.sh
