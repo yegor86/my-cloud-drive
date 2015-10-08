@@ -1,14 +1,5 @@
 package org.odesamama.mcd;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.LocatedFileStatus;
@@ -21,6 +12,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+
+import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * Created by starnakin on 17.09.2015.
@@ -56,8 +51,8 @@ public class HDFSTests {
             }
 
             OutputStream os = fileSystem.create(file, () -> System.out.println("File written"));
-            try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"))) {
-                bw.write("Test content");
+            try (BufferedOutputStream bw = new BufferedOutputStream(os)) {
+                bw.write("Test content".getBytes());
             }
         }
 
@@ -76,6 +71,9 @@ public class HDFSTests {
 
     @Test
     public void listFiles() throws URISyntaxException, IOException {
+
+        //write at least one file to system
+        //writeAndReadFilesToHDFS();
 
         // System.setProperty("HADOOP_HOME", "/home/hadoopuser/hadoop");
         System.setProperty("HADOOP_USER_NAME", "hadoopuser");

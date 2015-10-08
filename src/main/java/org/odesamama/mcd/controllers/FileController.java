@@ -2,6 +2,7 @@ package org.odesamama.mcd.controllers;
 
 import org.odesamama.mcd.services.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,14 +18,14 @@ public class FileController {
     FileService fileService;
 
     @RequestMapping(value="/upload", method= RequestMethod.POST)
-    public @ResponseBody String uploadFile(@RequestParam("name") String name, @RequestParam("file") MultipartFile file){
+    public @ResponseBody HttpStatus uploadFile(@RequestParam("name") String name, @RequestParam("file") MultipartFile file){
         try {
             fileService.uploadFileToHDFSServer(file.getBytes(), name);
         } catch (Exception e) {
-            return "Unable to write file";
+            return HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
-        return "Success";
+        return HttpStatus.OK;
     }
 
 }

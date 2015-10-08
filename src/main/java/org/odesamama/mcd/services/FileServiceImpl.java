@@ -3,10 +3,14 @@ package org.odesamama.mcd.services;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -17,6 +21,8 @@ import java.net.URISyntaxException;
 @Service
 public class FileServiceImpl implements FileService{
 
+    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+
     @Value("${hdfs.namenode.url}")
     private String nameNodeUrl;
 
@@ -24,7 +30,6 @@ public class FileServiceImpl implements FileService{
 
     @Override
     public void uploadFileToHDFSServer(byte[] bytes, String fileName)  throws URISyntaxException, IOException {
-        System.setProperty("HADOOP_USER_NAME", "hadoopuser");
 
         Configuration conf = new Configuration();
         // save file
@@ -32,7 +37,7 @@ public class FileServiceImpl implements FileService{
 
         try (FileSystem fileSystem = FileSystem.get(new URI(nameNodeUrl), conf)) {
 
-            OutputStream os = fileSystem.create(filePath, () -> System.out.println("File written"));
+            OutputStream os = fileSystem.create(filePath, () -> LOGGER.debug("File loaded"));
             try (BufferedOutputStream bw = new BufferedOutputStream(os)) {
                 bw.write(bytes);
             }
