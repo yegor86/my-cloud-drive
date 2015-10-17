@@ -1,5 +1,7 @@
 package org.odesamama.mcd.services;
 
+import org.odesamama.mcd.domain.User;
+
 /**
  * Created by starnakin on 15.10.2015.
  */
@@ -9,4 +11,6 @@ public interface UserService {
      * @return true if current email not registered
      */
     boolean checkEmailUnique(String email);
+
+    User createUser(User user);
 }
