@@ -12,7 +12,7 @@ public class ServiceException extends RuntimeException{
     private int statusCode;
 
     public ServiceException(){
-        this(ErrorMessages.SERVICE_IS_ANAVAILABlE);
+        this(ErrorMessages.SERVICE_IS_UNAVAILABlE);
     }
 
     public ServiceException(String message, int statusCode) {
