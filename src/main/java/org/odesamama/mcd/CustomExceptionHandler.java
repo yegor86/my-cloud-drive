@@ -1,14 +1,13 @@
 package org.odesamama.mcd;
 
-import org.odesamama.mcd.dto.ErrorDto;
-import org.odesamama.mcd.exeptions.ClientException;
-import org.odesamama.mcd.exeptions.ServiceException;
+import org.odesamama.mcd.exeptions.EmailTakenException;
+import org.odesamama.mcd.exeptions.UserNotExistsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,17 +20,22 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
-    @ExceptionHandler({ServiceException.class})
-    public ResponseEntity<Object> serviceException(HttpServletRequest req, Exception exception) {
+    @ExceptionHandler({Exception.class})
+    @ResponseStatus(value= HttpStatus.INTERNAL_SERVER_ERROR, reason=ErrorMessages.SERVICE_IS_UNAVAILABlE)
+    public void defaultExceptionHandler(HttpServletRequest req, Exception exception) {
         LOGGER.error("handle exception",exception);
-        ErrorDto error = new ErrorDto(((ServiceException)exception).getMessage(), ErrorDto.ErrorType.SERVER_ERROR);
-        return new ResponseEntity<Object>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler({ClientException.class})
-    public ResponseEntity<Object> clientException(HttpServletRequest req, Exception exception) {
+
+    @ExceptionHandler({EmailTakenException.class})
+    @ResponseStatus(value= HttpStatus.BAD_REQUEST, reason=ErrorMessages.EMAIL_IS_TAKEN)
+    public void clientException(HttpServletRequest req, Exception exception) {
         LOGGER.error("handle exception",exception);
-        ErrorDto error = new ErrorDto(((ServiceException)exception).getMessage(), ErrorDto.ErrorType.CLIENT_ERROR);
-        return new ResponseEntity<Object>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({UserNotExistsException.class})
+    @ResponseStatus(value= HttpStatus.BAD_REQUEST, reason=ErrorMessages.USER_NOT_EXISTS)
+    public void serviceException(HttpServletRequest req, Exception exception) {
+        LOGGER.error("handle exception",exception);
     }
 }

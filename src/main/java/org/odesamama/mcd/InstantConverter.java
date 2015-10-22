@@ -13,11 +13,19 @@ import java.util.Date;
 public class InstantConverter implements AttributeConverter<Instant,Date>{
     @Override
     public Date convertToDatabaseColumn(Instant date) {
-        return Date.from(date);
+        if(date != null) {
+            return Date.from(date);
+        }
+
+        return null;
     }
 
     @Override
     public Instant convertToEntityAttribute(Date date) {
-        return date.toInstant();
+        if(date != null) {
+            return date.toInstant();
+        }
+
+        return null;
     }
 }

@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 @RequestMapping("/users")
 @RestController
@@ -36,7 +38,7 @@ public class UserController{
     }
 
     @RequestMapping(value="/create", method = RequestMethod.POST)
-    public ResponseEntity createUser(@RequestBody User user){
+    public ResponseEntity createUser(@RequestBody User user) throws IOException, URISyntaxException {
 
         User created = userService.createUser(user);
 
