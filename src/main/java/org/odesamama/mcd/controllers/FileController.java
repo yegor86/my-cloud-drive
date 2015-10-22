@@ -6,6 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 /**
  * Created by starnakin on 07.10.2015.
  */
@@ -18,12 +21,9 @@ public class FileController {
     FileService fileService;
 
     @RequestMapping(value="/upload", method= RequestMethod.POST)
-    public @ResponseBody HttpStatus uploadFile(@RequestParam("name") String name, @RequestParam("file") MultipartFile file, @RequestParam("email") String email){
-        try {
-            fileService.uploadFileToHDFSServer(file.getBytes(), name, email);
-        } catch (Exception e) {
-            return HttpStatus.INTERNAL_SERVER_ERROR;
-        }
+    public @ResponseBody HttpStatus uploadFile(@RequestParam("name") String name, @RequestParam("file") MultipartFile file, @RequestParam("email") String email) throws IOException, URISyntaxException {
+
+        fileService.uploadFileToHDFSServer(file.getBytes(), name, email);
 
         return HttpStatus.OK;
     }

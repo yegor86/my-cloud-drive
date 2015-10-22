@@ -3,13 +3,11 @@ package org.odesamama.mcd.services;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.odesamama.mcd.ErrorMessages;
 import org.odesamama.mcd.domain.File;
 import org.odesamama.mcd.domain.FilesUsersRights;
 import org.odesamama.mcd.domain.User;
 import org.odesamama.mcd.domain.enums.Permissions;
-import org.odesamama.mcd.exeptions.ClientException;
-import org.odesamama.mcd.exeptions.ServiceException;
+import org.odesamama.mcd.exeptions.UserNotExistsException;
 import org.odesamama.mcd.repositories.FileRepository;
 import org.odesamama.mcd.repositories.FileUserRightsRepository;
 import org.odesamama.mcd.repositories.UserRepository;
@@ -20,8 +18,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * Created by starnakin on 07.10.2015.
@@ -45,12 +45,12 @@ public class FileServiceImpl implements FileService{
     private String nameNodeUrl;
 
     @Override
-    public void uploadFileToHDFSServer(byte[] bytes, String fileName, String email) {
+    public void uploadFileToHDFSServer(byte[] bytes, String fileName, String email) throws IOException, URISyntaxException {
 
         User user = userRepository.findByEmail(email);
 
         if(user == null){
-            throw new ClientException(ErrorMessages.USER_NOT_EXISTS + user.getUserEmail());
+            throw new UserNotExistsException();
         }
 
         Configuration conf = new Configuration();
@@ -65,29 +65,32 @@ public class FileServiceImpl implements FileService{
             }
 
             //save file metadata
-            File file = new File(user,fileName,user.getUserId().toString(),bytes.length);
-            File savedFile = fileRepository.save(file);
+            File file = saveFileMetadata(user, fileName, user.getUserId().toString(), bytes.length);
             //save owner access to file
-            FilesUsersRights rights = new FilesUsersRights(savedFile, user, Permissions.READ_MODIFY);
-            rightsRepository.save(rights);
-        }
-        catch (Exception ex){
-            //TODO remove hadoop exception first
-            LOGGER.error("error", ex);
-            //throw new ServiceException(ErrorMessages.ERROR_SAVING_FILE);
+            saveUserRights(file, user, Permissions.READ_MODIFY);
         }
     }
 
+
+    private File saveFileMetadata(User user, String fileName, String userId, int length){
+        File file = new File(user,fileName,user.getUserId().toString(),length);
+        return fileRepository.save(file);
+    }
+
     @Override
-    public void createHomeDirectoryForUser(User user) {
+    public void createHomeDirectoryForUser(User user) throws URISyntaxException, IOException {
         Configuration conf = new Configuration();
         Path directoryPath = new Path(String.format("%s/%s/",nameNodeUrl,user.getUserId()));
 
         try (FileSystem fileSystem = FileSystem.get(new URI(nameNodeUrl), conf)) {
             fileSystem.mkdirs(directoryPath);
-        }catch (Exception ex){
-            throw new ServiceException(ErrorMessages.UNABLE_CREATE_USER_DIRECTORY, ex);
         }
+    }
+
+    @Override
+    public void saveUserRights(File file, User user, Permissions permissions) {
+        FilesUsersRights rights = new FilesUsersRights(file, user, Permissions.READ_MODIFY);
+        rightsRepository.save(rights);
     }
 
 }
