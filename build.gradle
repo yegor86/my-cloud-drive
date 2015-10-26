@@ -52,6 +52,7 @@ dependencies {
 
 configurations {
     compile.exclude group:'ch.qos.logback'
+    provided.all*.exclude group: 'javax.servlet'
 }
 
 
@@ -96,3 +97,13 @@ task sql << {
 	    println "$row.*"
 	}
 }
+
+task migrate << {
+    
+    ['yfadeev', 'public'].each { schema ->
+	    println "Update schema ${schema}"
+	    //flyway.schemas = ${schema}
+	    //flywayMigrate
+	}
+}
+
