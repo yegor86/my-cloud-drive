@@ -28,9 +28,9 @@ public class FileController {
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public @ResponseBody HttpStatus uploadFile(@RequestParam("name") String name,
-            @RequestParam("file") MultipartFile file) {
+            @RequestParam("file") MultipartFile file, @RequestParam("email") String email) {
         try {
-            fileService.uploadFileToHDFSServer(file.getBytes(), name);
+            fileService.uploadFileToHDFSServer(file.getBytes(), name, email);
         } catch (Exception e) {
             return HttpStatus.INTERNAL_SERVER_ERROR;
         }

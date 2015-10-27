@@ -27,12 +27,23 @@ public class File {
     private String filePath;
 
     @Column(name = "file_size")
-    private Long fileSize;
+    private Integer fileSize;
 
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name ="owner_id")
     @JsonBackReference
     private User owner;
+
+    public File(){
+
+    }
+
+    public File(User user, String fileName, String path, Integer fileSize){
+        this.owner = user;
+        this.fileName = fileName;
+        this.filePath = path;
+        this.fileSize = fileSize;
+    }
 
     public Long getId() {
         return id;
@@ -58,11 +69,11 @@ public class File {
         this.filePath = filePath;
     }
 
-    public Long getFileSize() {
+    public Integer getFileSize() {
         return fileSize;
     }
 
-    public void setFileSize(Long fileSize) {
+    public void setFileSize(Integer fileSize) {
         this.fileSize = fileSize;
     }
 

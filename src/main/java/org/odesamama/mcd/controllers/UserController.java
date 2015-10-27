@@ -1,10 +1,7 @@
 package org.odesamama.mcd.controllers;
 
-import org.odesamama.mcd.ErrorMessages;
 import org.odesamama.mcd.domain.File;
 import org.odesamama.mcd.domain.User;
-import org.odesamama.mcd.exeptions.EmailTakenException;
-import org.odesamama.mcd.exeptions.ServiceException;
 import org.odesamama.mcd.repositories.UserRepository;
 import org.odesamama.mcd.services.UserService;
 import org.slf4j.Logger;
@@ -41,17 +38,9 @@ public class UserController{
     @RequestMapping(value="/create", method = RequestMethod.POST)
     public ResponseEntity createUser(@RequestBody User user){
 
-        if(user.getUserEmail() != null && !userService.checkEmailUnique(user.getUserEmail())){
-            throw new EmailTakenException();
-        }
+        User created = userService.createUser(user);
 
-        try {
-            userRepository.save(user);
-        }catch (Exception ex){
-            throw new ServiceException(ErrorMessages.ERROR_CREATING_USER, ex);
-        }
-
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return new ResponseEntity<>(created, HttpStatus.OK);
     }
 
 }

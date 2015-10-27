@@ -1,0 +1,1 @@
+ALTER TABLE "files_user_rights" ALTER COLUMN "group_id" DROP NOT NULL
