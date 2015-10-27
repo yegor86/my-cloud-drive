@@ -1,6 +1,7 @@
 package org.odesamama.mcd.multitenancy;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.sql.DataSource;
@@ -41,7 +42,14 @@ public class MultiTenantConnectionProviderImpl implements MultiTenantConnectionP
     public Connection getConnection(String tenantIdentifier) throws SQLException {
         final Connection connection = getAnyConnection();
         try {
-            connection.createStatement().execute(String.format("set search_path to '%s'", tenantIdentifier));
+            ResultSet rs = connection.createStatement().executeQuery(
+                    String.format("select count(*) from pg_namespace where nspname = '%s'", tenantIdentifier));
+
+            if (rs.next() && rs.getInt(1) > 0) {
+                connection.createStatement().execute(String.format("set search_path to '%s'", tenantIdentifier));
+            } else {
+                connection.createStatement().execute("set search_path to 'public'");
+            }
         } catch (SQLException e) {
             throw new HibernateException(
                     "Could not alter JDBC connection to specified schema [" + tenantIdentifier + "]", e);

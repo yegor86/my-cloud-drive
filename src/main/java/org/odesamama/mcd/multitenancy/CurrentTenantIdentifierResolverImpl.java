@@ -18,9 +18,9 @@ public class CurrentTenantIdentifierResolverImpl implements CurrentTenantIdentif
         RequestAttributes attribs = RequestContextHolder.getRequestAttributes();
         if (attribs instanceof ServletRequestAttributes) {
             HttpServletRequest request = ((ServletRequestAttributes) attribs).getRequest();
-            String uri = request.getRequestURI();
+            String login = request.getHeader("login");
 
-            return uri.contains("yfadeev") ? "yfadeev" : "public";
+            return login != null ? login : "public";
         }
         return "public";
     }

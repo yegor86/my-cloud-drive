@@ -5,7 +5,6 @@ import org.odesamama.mcd.repositories.FileRepository;
 import org.odesamama.mcd.services.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,8 +38,8 @@ public class FileController {
         return HttpStatus.OK;
     }
 
-    @RequestMapping(value = "/byuser/{login}", method = RequestMethod.GET)
-    public Iterable<File> getFilesByUser(@PathVariable("login") String login) {
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public Iterable<File> getFiles() {
         return fileRepository.findAll();
     }
 
