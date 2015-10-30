@@ -1,4 +1,4 @@
-package org.odesamama.mcd;
+package org.odesamama.mcd.controllers;
 
 import org.odesamama.mcd.exeptions.EmailTakenException;
 import org.odesamama.mcd.exeptions.UserNotExistsException;
@@ -21,20 +21,20 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
     @ExceptionHandler({Exception.class})
-    @ResponseStatus(value= HttpStatus.INTERNAL_SERVER_ERROR, reason=ErrorMessages.SERVICE_IS_UNAVAILABlE)
+    @ResponseStatus(value= HttpStatus.INTERNAL_SERVER_ERROR, reason="Service is unavailable")
     public void defaultExceptionHandler(HttpServletRequest req, Exception exception) {
         LOGGER.error("handle exception",exception);
     }
 
 
     @ExceptionHandler({EmailTakenException.class})
-    @ResponseStatus(value= HttpStatus.BAD_REQUEST, reason=ErrorMessages.EMAIL_IS_TAKEN)
+    @ResponseStatus(value= HttpStatus.BAD_REQUEST, reason="Email is taken")
     public void clientException(HttpServletRequest req, Exception exception) {
         LOGGER.error("handle exception",exception);
     }
 
     @ExceptionHandler({UserNotExistsException.class})
-    @ResponseStatus(value= HttpStatus.BAD_REQUEST, reason=ErrorMessages.USER_NOT_EXISTS)
+    @ResponseStatus(value= HttpStatus.BAD_REQUEST, reason="User not exists")
     public void serviceException(HttpServletRequest req, Exception exception) {
         LOGGER.error("handle exception",exception);
     }

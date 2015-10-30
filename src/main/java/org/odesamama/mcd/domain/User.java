@@ -6,7 +6,7 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import javax.persistence.*;
-import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -40,21 +40,21 @@ public class User {
 
     @Column(name = "create_date")
     @JsonIgnore
-    private Instant created;
+    private Date created;
 
     @Column(name = "update_date")
     @JsonIgnore
-    private Instant updated;
+    private Date updated;
 
     @PreUpdate
     public void preUpdate(){
-        updated = Instant.now();
+        updated = new Date();
     }
 
     @PrePersist
     public void preCreate(){
-        created = Instant.now();
-        updated = Instant.now();
+        created = new Date();
+        updated = new Date();
     }
 
 
@@ -111,19 +111,19 @@ public class User {
         this.lastName = lastName;
     }
 
-    public Instant getCreated() {
+    public Date getCreated() {
         return created;
     }
 
-    public void setCreated(Instant created) {
+    public void setCreated(Date created) {
         this.created = created;
     }
 
-    public Instant getUpdated() {
+    public Date getUpdated() {
         return updated;
     }
 
-    public void setUpdated(Instant updated) {
+    public void setUpdated(Date updated) {
         this.updated = updated;
     }
 

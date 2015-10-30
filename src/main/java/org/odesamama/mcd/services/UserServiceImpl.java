@@ -43,6 +43,6 @@ public class UserServiceImpl implements UserService{
         fileService.createHomeDirectoryForUser(savedUser);
 
 
-        return null;
+        return savedUser;
     }
 }

@@ -1,10 +1,12 @@
 package org.odesamama.mcd.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Created by starnakin on 25.09.2015.
@@ -34,15 +36,27 @@ public class File {
     @JsonBackReference
     private User owner;
 
+    @Column(name = "create_date")
+    @JsonIgnore
+    private Date created;
+
+    @Column(name = "update_date")
+    @JsonIgnore
+    private Date updated;
+
+    @Column(name ="is_folder")
+    private Boolean isDirectory;
+
     public File(){
 
     }
 
-    public File(User user, String fileName, String path, Integer fileSize){
+    public File(User user, String fileName, String path, Integer fileSize, Boolean isDirectory){
         this.owner = user;
         this.fileName = fileName;
         this.filePath = path;
         this.fileSize = fileSize;
+        this.isDirectory = isDirectory;
     }
 
     public Long getId() {
@@ -85,6 +99,18 @@ public class File {
         this.owner = owner;
     }
 
+    public Date getCreated() {
+        return created;
+    }
+
+    public Date getUpdated() {
+        return updated;
+    }
+
+    public Boolean getIsDirectory() {
+        return isDirectory;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -99,6 +125,8 @@ public class File {
                 .append(filePath, file.filePath)
                 .append(fileSize, file.fileSize)
                 .append(owner, file.owner)
+                .append(created, file.created)
+                .append(isDirectory, file.isDirectory)
                 .isEquals();
     }
 
@@ -110,6 +138,8 @@ public class File {
                 .append(filePath)
                 .append(fileSize)
                 .append(owner)
+                .append(created)
+                .append(isDirectory)
                 .toHashCode();
     }
 }

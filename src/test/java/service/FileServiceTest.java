@@ -10,6 +10,9 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 /**
  * Created by starnakin on 16.10.2015.
  */
@@ -23,7 +26,7 @@ public class FileServiceTest {
     private FileService fileService;
 
     @Test
-    public void testCreatingDirectoryForUser(){
+    public void testCreatingDirectoryForUser() throws IOException, URISyntaxException {
         User user = new User();
         user.setUserId(System.nanoTime());
         fileService.createHomeDirectoryForUser(user);

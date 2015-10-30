@@ -1,6 +1,7 @@
 package org.odesamama.mcd;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
@@ -17,5 +18,10 @@ public class AppConfiguration {
     @PostConstruct
     public void init(){
         System.setProperty("HADOOP_USER_NAME", hadoopUserName);
+    }
+
+    @Bean
+    public org.apache.hadoop.conf.Configuration getConfiguration(){
+        return new org.apache.hadoop.conf.Configuration();
     }
 }

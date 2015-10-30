@@ -28,4 +28,12 @@ public class FileController {
         return HttpStatus.OK;
     }
 
+    @RequestMapping(value="createfolder", method= RequestMethod.POST)
+    public @ResponseBody HttpStatus createFolder(@RequestParam("folderName") String folderName,@RequestParam("path") String path, @RequestParam("email") String email) throws IOException, URISyntaxException {
+
+        fileService.createFolder(folderName, path, email);
+
+        return  HttpStatus.OK;
+    }
+
 }
