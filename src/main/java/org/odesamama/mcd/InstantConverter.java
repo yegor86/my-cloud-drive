@@ -14,7 +14,11 @@ import javax.persistence.Converter;
 public class InstantConverter implements AttributeConverter<Instant, Date> {
     @Override
     public Date convertToDatabaseColumn(Instant date) {
-        return Date.from(date);
+        if (date != null) {
+            return Date.from(date);
+        }
+
+        return null;
     }
 
     @Override

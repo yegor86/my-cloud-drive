@@ -1,15 +1,15 @@
 package org.odesamama.mcd.services;
 
-import org.odesamama.mcd.ErrorMessages;
 import org.odesamama.mcd.domain.User;
 import org.odesamama.mcd.exeptions.EmailTakenException;
-import org.odesamama.mcd.exeptions.ServiceException;
 import org.odesamama.mcd.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 /**
  * Created by starnakin on 15.10.2015.
@@ -34,17 +34,14 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional
-    public User createUser(User user) {
+    public User createUser(User user) throws IOException, URISyntaxException {
         if(user.getUserEmail() != null && !checkEmailUnique(user.getUserEmail())){
             throw new EmailTakenException();
         }
 
-        try {
-            User savedUser = userRepository.save(user);
-            fileService.createHomeDirectoryForUser(savedUser);
-        }catch (Exception ex){
-            throw new ServiceException(ErrorMessages.ERROR_CREATING_USER, ex);
-        }
+        User savedUser = userRepository.save(user);
+        fileService.createHomeDirectoryForUser(savedUser);
+
 
         return null;
     }

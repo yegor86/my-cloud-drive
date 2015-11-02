@@ -1,4 +1,6 @@
 import groovy.sql.Sql
+import org.flywaydb.core.Flyway
+import org.flywaydb.core.internal.util.jdbc.DriverDataSource
 
 buildscript {
     ext {
@@ -12,12 +14,14 @@ buildscript {
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}") 
         classpath 'org.flywaydb:flyway-gradle-plugin:3.2.1'
-    }
+        classpath 'org.postgresql:postgresql:9.4-1201-jdbc41'
+        classpath files('src/main/resources') 
+     }
 }
 
 apply plugin: 'java'
 apply plugin: 'spring-boot'
-apply plugin: 'org.flywaydb.flyway' 
+apply plugin: 'org.flywaydb.flyway'
 
 jar {
     baseName = 'my-cloud-drive'
@@ -32,7 +36,6 @@ repositories {
     maven { url "https://repo.spring.io/milestone" }
 }
 
-
 dependencies {
     //compile("org.springframework.cloud:spring-cloud-starter-eureka")
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -42,12 +45,11 @@ dependencies {
     
     compile("commons-lang:commons-lang:2.6")
     compile "org.apache.hadoop:hadoop-client:2.7.1"
-    compile "org.postgresql:postgresql:9.4-1201-jdbc41"
-    //runtime("postgresql:postgresql:9.0-801.jdbc4"")
     
     testCompile("org.springframework.boot:spring-boot-starter-test")
     testCompile ("junit:junit:4.11")
-
+    
+    compile files("src/main/resources/db/migration")
 }
 
 configurations {
@@ -68,9 +70,9 @@ task wrapper(type: Wrapper) {
 
 flyway {
     url = 'jdbc:postgresql://localhost:5432/mydrive'
+    driver = 'org.postgresql.Driver'
     user = 'mydrive'
     password = 'mydrive'
-    //schemas = ['schema1', 'schema2', 'schema3']   
 }
 
 configurations {
@@ -85,7 +87,8 @@ URLClassLoader loader = GroovyObject.class.classLoader
 configurations.driver.each {File file ->
     loader.addURL(file.toURL())
 }
-task sql << {
+
+task migrateAll << {
     def driverName = 'org.postgresql.Driver'
     groovy.sql.Sql sql = groovy.sql.Sql.newInstance(
         'jdbc:postgresql://localhost:5432/mydrive', 
@@ -93,17 +96,19 @@ task sql << {
         'mydrive', 
         driverName
     )
-    sql.eachRow("select * from users") { row ->
-	    println "$row.*"
-	}
-}
-
-task migrate << {
+    org.flywaydb.core.Flyway flyway = new org.flywaydb.core.Flyway()
     
-    ['yfadeev', 'public'].each { schema ->
-	    println "Update schema ${schema}"
-	    //flyway.schemas = ${schema}
-	    //flywayMigrate
-	}
+    flyway.setDataSource(new DriverDataSource(Thread.currentThread().getContextClassLoader(), 
+        driverName, 
+        'jdbc:postgresql://localhost:5432/mydrive', 
+        'mydrive', 
+        'mydrive'))
+    
+    
+    sql.eachRow("select nspname from pg_namespace where nspname !~ '^pg_.*' and nspname != 'information_schema'") { row ->
+        println "$row.nspname"
+        flyway.schemas = ["$row.nspname"]
+        flyway.migrate()
+    }
+    
 }
-
