@@ -50,7 +50,7 @@ public class UserController{
         return new ArrayList<>();
     }
 
-    @RequestMapping(value="/create", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+    @RequestMapping(value="/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity createUser(@RequestBody User user) throws IOException, URISyntaxException {
 
