@@ -1,18 +1,26 @@
 package org.odesamama.mcd.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.validation.constraints.Size;
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-
-import javax.persistence.*;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Size;
 
 /**
  * Created by starnakin on 25.09.2015.
  */
 
 @Entity
-@Table(name ="groups")
+@Table(name = "groups")
 public class Group {
 
     @Id
@@ -25,8 +33,8 @@ public class Group {
     @Size(max = 254)
     private String description;
 
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name ="owner_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
     private User owner;
 
     public Long getGroupId() {
@@ -55,27 +63,21 @@ public class Group {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o)
+            return true;
 
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass())
+            return false;
 
         Group group = (Group) o;
 
-        return new EqualsBuilder()
-                .append(groupId, group.groupId)
-                .append(description, group.description)
-                .append(owner, group.owner)
-                .isEquals();
+        return new EqualsBuilder().append(groupId, group.groupId).append(description, group.description)
+                .append(owner, group.owner).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(groupId)
-                .append(description)
-                .append(owner)
-                .toHashCode();
+        return new HashCodeBuilder(17, 37).append(groupId).append(description).append(owner).toHashCode();
     }
-
 
 }

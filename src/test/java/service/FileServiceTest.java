@@ -1,5 +1,8 @@
 package service;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.odesamama.mcd.Application;
@@ -9,9 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
 
 /**
  * Created by starnakin on 16.10.2015.
@@ -26,11 +26,10 @@ public class FileServiceTest {
     private FileService fileService;
 
     @Test
-    public void testCreatingDirectoryForUser() throws IOException, URISyntaxException {
+    public void testCreatingDirectoryForUser() throws URISyntaxException, IOException {
         User user = new User();
         user.setUserId(System.nanoTime());
         fileService.createHomeDirectoryForUser(user);
     }
-
 
 }

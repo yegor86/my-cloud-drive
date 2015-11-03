@@ -1,16 +1,23 @@
 package org.odesamama.mcd.controllers;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+
+import javax.annotation.Resource;
+
 import org.odesamama.mcd.domain.File;
 import org.odesamama.mcd.domain.User;
 import org.odesamama.mcd.repositories.UserRepository;
 import org.odesamama.mcd.services.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.io.IOException;
@@ -19,19 +26,17 @@ import java.util.ArrayList;
 
 @RequestMapping("/users")
 @RestController
-public class UserController{
+public class UserController {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
-
-	@Resource
-	private UserRepository userRepository;
+    @Resource
+    private UserRepository userRepository;
 
     @Autowired
     private UserService userService;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public Iterable<User> getUserList() {
-          return userRepository.findAll();
+        return userRepository.findAll();
     }
 
     @RequestMapping(value = "/{email:.+}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
