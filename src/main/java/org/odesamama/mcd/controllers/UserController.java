@@ -1,10 +1,5 @@
 package org.odesamama.mcd.controllers;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-
-import javax.annotation.Resource;
-
 import org.odesamama.mcd.domain.File;
 import org.odesamama.mcd.domain.User;
 import org.odesamama.mcd.repositories.UserRepository;
@@ -13,11 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.io.IOException;
@@ -56,7 +47,6 @@ public class UserController {
     }
 
     @RequestMapping(value="/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
     public ResponseEntity createUser(@RequestBody User user) throws IOException, URISyntaxException {
 
         User created = userService.createUser(user);
