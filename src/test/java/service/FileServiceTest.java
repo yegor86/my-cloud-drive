@@ -1,5 +1,8 @@
 package service;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.odesamama.mcd.Application;
@@ -23,11 +26,10 @@ public class FileServiceTest {
     private FileService fileService;
 
     @Test
-    public void testCreatingDirectoryForUser(){
+    public void testCreatingDirectoryForUser() throws URISyntaxException, IOException {
         User user = new User();
         user.setUserId(System.nanoTime());
         fileService.createHomeDirectoryForUser(user);
     }
-
 
 }
