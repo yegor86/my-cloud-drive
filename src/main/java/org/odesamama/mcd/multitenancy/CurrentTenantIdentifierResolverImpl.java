@@ -9,7 +9,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 @Component
-// @Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class CurrentTenantIdentifierResolverImpl implements CurrentTenantIdentifierResolver {
 
     @Override
@@ -18,9 +17,9 @@ public class CurrentTenantIdentifierResolverImpl implements CurrentTenantIdentif
         RequestAttributes attribs = RequestContextHolder.getRequestAttributes();
         if (attribs instanceof ServletRequestAttributes) {
             HttpServletRequest request = ((ServletRequestAttributes) attribs).getRequest();
-            String login = request.getHeader("login");
+            String userUid = request.getHeader("userUid");
 
-            return login != null ? login : "public";
+            return userUid != null ? userUid : "public";
         }
         return "public";
     }

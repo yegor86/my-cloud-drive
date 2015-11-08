@@ -1,10 +1,6 @@
-import groovy.sql.Sql
-import org.flywaydb.core.Flyway
-import org.flywaydb.core.internal.util.jdbc.DriverDataSource
-
 buildscript {
     ext {
-        springBootVersion = '1.3.0.M5'
+        springBootVersion = "1.3.0.M5"
     }
     repositories {
         mavenCentral()
@@ -12,20 +8,22 @@ buildscript {
         maven { url "https://repo.spring.io/milestone" }
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}") 
-        classpath 'org.flywaydb:flyway-gradle-plugin:3.2.1'
-        classpath 'org.postgresql:postgresql:9.4-1201-jdbc41'
-        classpath files('src/main/resources') 
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}" 
+        classpath "org.flywaydb:flyway-core:3.2.1"
+        classpath "org.flywaydb:flyway-gradle-plugin:3.2.1"
+        classpath "org.postgresql:postgresql:9.4-1201-jdbc41"
+        
+        classpath files("src/main/resources") 
      }
 }
 
-apply plugin: 'java'
-apply plugin: 'spring-boot'
-apply plugin: 'org.flywaydb.flyway'
+apply plugin: "java"
+apply plugin: "spring-boot"
+apply plugin: "org.flywaydb.flyway"
 
 jar {
-    baseName = 'my-cloud-drive'
-    version = '0.0.1-SNAPSHOT'
+    baseName = "my-cloud-drive"
+    version = "0.0.1-SNAPSHOT"
 }
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -37,24 +35,25 @@ repositories {
 }
 
 dependencies {
-    //compile("org.springframework.cloud:spring-cloud-starter-eureka")
-    compile("org.springframework.boot:spring-boot-starter-data-jpa")
-    compile("org.springframework.boot:spring-boot-starter-jdbc")
-    //compile("org.springframework.boot:spring-boot-starter-security")
-    compile("org.springframework.boot:spring-boot-starter-web")
+    //compile "org.springframework.cloud:spring-cloud-starter-eureka"
+    compile "org.springframework.boot:spring-boot-starter-data-jpa"
+    compile "org.springframework.boot:spring-boot-starter-jdbc"
+    //compile "org.springframework.boot:spring-boot-starter-security"
+    compile "org.springframework.boot:spring-boot-starter-web"
+    compile "org.codehaus.groovy:groovy-all:2.4.5"
     
-    compile("commons-lang:commons-lang:2.6")
+    compile "commons-lang:commons-lang:2.6"
     compile "org.apache.hadoop:hadoop-client:2.7.1"
+    compile "org.flywaydb:flyway-core:3.2.1"
+    compile "org.postgresql:postgresql:9.4-1201-jdbc41"
     
-    testCompile("org.springframework.boot:spring-boot-starter-test")
-    testCompile ("junit:junit:4.11")
-    
-    compile files("src/main/resources/db/migration")
+    testCompile "org.springframework.boot:spring-boot-starter-test"
+    testCompile "junit:junit:4.11"
 }
 
 configurations {
-    compile.exclude group:'ch.qos.logback'
-    provided.all*.exclude group: 'javax.servlet'
+    compile.exclude group:"ch.qos.logback"
+    provided.all*.exclude group: "javax.servlet"
 }
 
 
@@ -65,14 +64,14 @@ dependencyManagement {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.3'
+    gradleVersion = "2.3"
 }
 
 flyway {
-    url = 'jdbc:postgresql://localhost:5432/mydrive'
-    driver = 'org.postgresql.Driver'
-    user = 'mydrive'
-    password = 'mydrive'
+    url = "jdbc:postgresql://localhost:5432/mydrive"
+    driver = "org.postgresql.Driver"
+    user = "mydrive"
+    password = "mydrive"
 }
 
 configurations {
@@ -80,7 +79,7 @@ configurations {
 }
 
 dependencies {
-    driver group: 'org.postgresql', name: 'postgresql', version: '9.4-1201-jdbc41'
+    driver group: "org.postgresql", name: "postgresql", version: "9.4-1201-jdbc41"
 }
 
 URLClassLoader loader = GroovyObject.class.classLoader
@@ -89,26 +88,16 @@ configurations.driver.each {File file ->
 }
 
 task migrateAll << {
-    def driverName = 'org.postgresql.Driver'
     groovy.sql.Sql sql = groovy.sql.Sql.newInstance(
-        'jdbc:postgresql://localhost:5432/mydrive', 
-        'mydrive', 
-        'mydrive', 
-        driverName
+        "jdbc:postgresql://localhost:5432/mydrive", 
+        "mydrive", 
+        "mydrive", 
+        "org.postgresql.Driver"
     )
-    org.flywaydb.core.Flyway flyway = new org.flywaydb.core.Flyway()
     
-    flyway.setDataSource(new DriverDataSource(Thread.currentThread().getContextClassLoader(), 
-        driverName, 
-        'jdbc:postgresql://localhost:5432/mydrive', 
-        'mydrive', 
-        'mydrive'))
-    
-    
+    def shell = new GroovyShell(buildscript.classLoader);
     sql.eachRow("select nspname from pg_namespace where nspname !~ '^pg_.*' and nspname != 'information_schema'") { row ->
-        println "$row.nspname"
-        flyway.schemas = ["$row.nspname"]
-        flyway.migrate()
+        println "Update schema: $row.nspname"
+        shell.run(file('groovy/MigrateTools.groovy'), "$row.nspname")
     }
-    
 }
