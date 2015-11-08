@@ -8,12 +8,12 @@ buildscript {
         maven { url "https://repo.spring.io/milestone" }
     }
     dependencies {
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}" 
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
         classpath "org.flywaydb:flyway-core:3.2.1"
         classpath "org.flywaydb:flyway-gradle-plugin:3.2.1"
         classpath "org.postgresql:postgresql:9.4-1201-jdbc41"
-        
-        classpath files("src/main/resources") 
+
+        classpath files("src/main/resources")
      }
 }
 
@@ -46,9 +46,16 @@ dependencies {
     compile "org.apache.hadoop:hadoop-client:2.7.1"
     compile "org.flywaydb:flyway-core:3.2.1"
     compile "org.postgresql:postgresql:9.4-1201-jdbc41"
+
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+    testCompile ("junit:junit:4.11")
     
-    testCompile "org.springframework.boot:spring-boot-starter-test"
-    testCompile "junit:junit:4.11"
+    compile files("src/main/resources/db/migration")
+
+    compile("org.mockito:mockito-all:2.0.2-beta")
+    compile("com.jayway.restassured:rest-assured:2.6.0")
+    compile("org.assertj:assertj-core:3.2.0")
+
 }
 
 configurations {
@@ -89,9 +96,9 @@ configurations.driver.each {File file ->
 
 task migrateAll << {
     groovy.sql.Sql sql = groovy.sql.Sql.newInstance(
-        "jdbc:postgresql://localhost:5432/mydrive", 
-        "mydrive", 
-        "mydrive", 
+        "jdbc:postgresql://localhost:5432/mydrive",
+        "mydrive",
+        "mydrive",
         "org.postgresql.Driver"
     )
     
