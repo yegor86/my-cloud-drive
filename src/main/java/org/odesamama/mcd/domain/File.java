@@ -51,6 +51,17 @@ public class File {
 
     }
 
+    @PreUpdate
+    public void preUpdate(){
+        updated = new Date();
+    }
+
+    @PrePersist
+    public void preCreate(){
+        created = new Date();
+        updated = new Date();
+    }
+
     public File(User user, String fileName, String path, Integer fileSize, Boolean isDirectory){
         this.owner = user;
         this.fileName = fileName;
