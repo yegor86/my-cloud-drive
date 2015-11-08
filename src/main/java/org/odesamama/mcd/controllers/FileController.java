@@ -1,5 +1,8 @@
 package org.odesamama.mcd.controllers;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 import org.odesamama.mcd.domain.File;
 import org.odesamama.mcd.repositories.FileRepository;
 import org.odesamama.mcd.services.FileService;
@@ -11,9 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
 
 /**
  * Created by starnakin on 07.10.2015.
@@ -30,10 +30,10 @@ public class FileController {
     private FileRepository fileRepository;
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
-    public @ResponseBody HttpStatus uploadFile(@RequestParam("name") String name, @RequestParam("file") MultipartFile file, @RequestParam("email") String email) throws IOException, URISyntaxException {
-
+    public @ResponseBody HttpStatus uploadFile(@RequestParam("name") String name,
+            @RequestParam("file") MultipartFile file, @RequestParam("email") String email)
+                    throws IOException, URISyntaxException {
         fileService.uploadFileToHDFSServer(file.getBytes(), name, email);
-
         return HttpStatus.OK;
     }
 
@@ -41,5 +41,4 @@ public class FileController {
     public Iterable<File> getFiles() {
         return fileRepository.findAll();
     }
-
 }

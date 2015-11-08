@@ -1,16 +1,30 @@
 package org.odesamama.mcd.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import java.time.Instant;
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-import javax.persistence.*;
-import java.time.Instant;
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
-@Table(name="users")
+@Table(name = "users")
 public class User {
 
     @Id
@@ -40,23 +54,31 @@ public class User {
 
     @Column(name = "create_date")
     @JsonIgnore
-    private Instant created;
+    private Date created;
 
     @Column(name = "update_date")
     @JsonIgnore
-    private Instant updated;
+    private Date updated;
+
+    public User() {
+
+    }
+
+    public User(String userUid) {
+        super();
+        this.userUid = userUid;
+    }
 
     @PreUpdate
-    public void preUpdate(){
-        updated = Instant.now();
+    public void preUpdate() {
+        updated = Date.from(Instant.now());
     }
 
     @PrePersist
-    public void preCreate(){
-        created = Instant.now();
-        updated = Instant.now();
+    public void preCreate() {
+        created = Date.from(Instant.now());
+        updated = Date.from(Instant.now());
     }
-
 
     public Long getUserId() {
         return userId;
@@ -111,47 +133,40 @@ public class User {
         this.lastName = lastName;
     }
 
-    public Instant getCreated() {
+    public Date getCreated() {
         return created;
     }
 
-    public void setCreated(Instant created) {
+    public void setCreated(Date created) {
         this.created = created;
     }
 
-    public Instant getUpdated() {
+    public Date getUpdated() {
         return updated;
     }
 
-    public void setUpdated(Instant updated) {
+    public void setUpdated(Date updated) {
         this.updated = updated;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o)
+            return true;
 
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass())
+            return false;
 
         User user = (User) o;
 
-        return new EqualsBuilder()
-                .append(userId, user.userId)
-                .append(userUid, user.userUid)
-                .append(userName, user.userName)
-                .append(lastName, user.lastName)
-                .append(userEmail, user.userEmail)
+        return new EqualsBuilder().append(userId, user.userId).append(userUid, user.userUid)
+                .append(userName, user.userName).append(lastName, user.lastName).append(userEmail, user.userEmail)
                 .isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(userId)
-                .append(userUid)
-                .append(userName)
-                .append(lastName)
-                .append(userEmail)
-                .toHashCode();
+        return new HashCodeBuilder(17, 37).append(userId).append(userUid).append(userName).append(lastName)
+                .append(userEmail).toHashCode();
     }
 }

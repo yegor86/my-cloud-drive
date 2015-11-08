@@ -7,4 +7,6 @@ import org.odesamama.mcd.domain.User;
  */
 public interface CustomUserRepository {
     User findByEmail(String email);
+
+    Iterable<String> findUsers();
 }
