@@ -7,7 +7,7 @@
     
     <code>$ docker exec -it [container-id] bash</code>
 
-## To rebuild the container
+## Rebuild the container
 1. Stop the container 
 
     <code>$ docker stop [container-id]</code>

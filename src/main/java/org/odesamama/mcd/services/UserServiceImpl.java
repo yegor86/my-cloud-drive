@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 
 import javax.annotation.Resource;
 
+import org.odesamama.mcd.domain.FilesUsersRights;
 import org.odesamama.mcd.domain.User;
 import org.odesamama.mcd.exeptions.EmailTakenException;
 import org.odesamama.mcd.multitenancy.TenantManager;
@@ -50,5 +51,10 @@ public class UserServiceImpl implements UserService {
         tenantManager.create(user.getUserUid());
         fileService.createHomeDirectoryForUser(savedUser);
         return savedUser;
+    }
+
+    public FilesUsersRights grantAccess() {
+
+        return null;
     }
 }
