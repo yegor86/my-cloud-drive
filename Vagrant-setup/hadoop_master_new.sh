@@ -7,25 +7,13 @@ sudo sed -i 's/net.ipv6.bindv6only\ =\ 1/net.ipv6.bindv6only\ =\ 0/' \
 
 sudo apt-get -y install python-software-properties
 
-<<<<<<< HEAD
 # openjdk
 sudo apt-get -y update
 sudo apt-get -y install openjdk-7-jdk
 sudo ln -s /usr/lib/jvm/java-1.7.0-openjdk-amd64 /usr/lib/jvm/java
 
 sudo apt-get -y install dos2unix
-=======
-# add provider for oracle java
-sudo add-apt-repository -y ppa:webupd8team/java
-sudo apt-get -y update
-# accept copyrights for oracle-java8-installer
-echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections
-sudo apt-get -y --force-yes install oracle-java8-installer
-sudo update-java-alternatives -s java-8-oracle
 
-sudo apt-get -y install dos2unix
-
->>>>>>> origin/master
 #copy sripst to run at startup and shutdown
 cp /mnt/bootstrap/hadoop_files/rc.local /etc/rc.local
 dos2unix /mnt/bootstrap/hadoop_files/rc.local /etc/rc.local
