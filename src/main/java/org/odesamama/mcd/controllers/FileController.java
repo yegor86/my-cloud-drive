@@ -42,12 +42,14 @@ public class FileController {
         return fileRepository.findAll();
     }
 
-    @RequestMapping(value="createfolder", method= RequestMethod.POST)
-    public @ResponseBody HttpStatus createFolder(@RequestParam("folderName") String folderName,@RequestParam("path") String path, @RequestParam("email") String email) throws IOException, URISyntaxException {
+    @RequestMapping(value = "createfolder", method = RequestMethod.POST)
+    public @ResponseBody HttpStatus createFolder(@RequestParam("folderName") String folderName,
+            @RequestParam("path") String path, @RequestParam("email") String email)
+                    throws IOException, URISyntaxException {
 
         fileService.createFolder(folderName, path, email);
 
-        return  HttpStatus.OK;
+        return HttpStatus.OK;
     }
 
 }

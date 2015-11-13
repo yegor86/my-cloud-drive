@@ -5,7 +5,15 @@ Add  to the PATH environment variable.
 
 See [Get SSH working on Vagrant/Windows/Git](https://gist.github.com/haf/2843680)
 
-### Stop and unregister all VMs
+### Fix `Your VM has become "inaccessible." Unfortunately, this is a critical error`
+* Go to VirtualBox installation folder: c:\Program Files\Oracle\VirtualBox\
+* Run the following command
+    
+    <code>$ VBoxManage list vms</code>
+
+    <code>$ VBoxManage unregistervm <uuid></code>
+    
+### Stop and unregister VM or VM that is in GURU_MEDITATION or any other locked state
 * Go to VirtualBox installation folder: c:\Program Files\Oracle\VirtualBox\
 * Run the following command
     
@@ -15,9 +23,10 @@ See [Get SSH working on Vagrant/Windows/Git](https://gist.github.com/haf/2843680
     
     <code>$ VBoxManage unregistervm <uuid></code>
     
-### Delete a virtualbox machine in the GURU_MEDITATION error state
-* Kill the VBoxHeadless process which holds your app port and run "vagrant destroy". You can use [TCPView](https://technet.microsoft.com/en-us/library/bb897437.aspx) in order to find pid by Local Port and/or End the process
+### Stop a virtualbox machine in the GURU_MEDITATION error state
+* Get VM list
 
-* Destroy vm by executing
-
-    <code>$ vagrant destroy vmname</code>
+    <code>$ VBoxManage list vms</code>    
+* Power off VM
+    
+    <code>$ VBoxManage controlvm <uuid> poweroff</code>
