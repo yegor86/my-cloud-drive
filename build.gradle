@@ -44,6 +44,7 @@ dependencies {
     
     compile "commons-lang:commons-lang:2.6"
     compile "org.apache.hadoop:hadoop-client:2.7.1"
+    compile "commons-io:commons-io:2.4"
     compile "org.flywaydb:flyway-core:3.2.1"
     compile "org.postgresql:postgresql:9.4-1201-jdbc41"
 
@@ -53,6 +54,7 @@ dependencies {
     compile("org.mockito:mockito-all:2.0.2-beta")
     compile("com.jayway.restassured:rest-assured:2.6.0")
     compile("org.assertj:assertj-core:3.2.0")
+
 
 }
 

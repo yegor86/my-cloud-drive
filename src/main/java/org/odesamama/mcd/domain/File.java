@@ -1,7 +1,6 @@
 package org.odesamama.mcd.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
@@ -14,6 +13,9 @@ import java.util.Date;
 
 @Entity
 @Table(name ="files")
+@NamedQueries({
+        @NamedQuery(name = "File.getFileInfoByFilePathAndEmali", query = "from File where owner.userEmail = :email and filePath = :path"),
+        @NamedQuery(name = "File.getFilesListWithoutRoot", query = "from File where owner.userEmail = :email and filePath like :path and filePath <> :rootpath")})
 public class File {
 
     @Id
@@ -37,15 +39,16 @@ public class File {
     private User owner;
 
     @Column(name = "create_date")
-    @JsonIgnore
     private Date created;
 
     @Column(name = "update_date")
-    @JsonIgnore
     private Date updated;
 
     @Column(name ="is_folder")
     private Boolean isDirectory;
+
+    @Column(name="extension")
+    private String extension;
 
     public File(){
 
@@ -68,6 +71,14 @@ public class File {
         this.filePath = path;
         this.fileSize = fileSize;
         this.isDirectory = isDirectory;
+    }
+
+    public String getExtension() {
+        return extension;
+    }
+
+    public void setExtension(String extension) {
+        this.extension = extension;
     }
 
     public Long getId() {
