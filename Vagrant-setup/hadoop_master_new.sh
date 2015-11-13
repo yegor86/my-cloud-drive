@@ -7,17 +7,12 @@ sudo sed -i 's/net.ipv6.bindv6only\ =\ 1/net.ipv6.bindv6only\ =\ 0/' \
 
 sudo apt-get -y install python-software-properties
 
-#add provider for oracle java
-sudo add-apt-repository -y ppa:webupd8team/java
-
+# openjdk
 sudo apt-get -y update
+sudo apt-get -y install openjdk-7-jdk
+sudo ln -s /usr/lib/jvm/java-1.7.0-openjdk-amd64 /usr/lib/jvm/java
 
-#accept copyrights for oracle-java8-installer
-echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections
-sudo apt-get -y install oracle-java8-installer
 sudo apt-get -y install dos2unix
-
-sudo update-java-alternatives -s java-8-oracle
 
 #copy sripst to run at startup and shutdown
 cp /mnt/bootstrap/hadoop_files/rc.local /etc/rc.local
@@ -61,10 +56,7 @@ wget http://www.eu.apache.org/dist/hadoop/core/hadoop-2.7.1/hadoop-2.7.1.tar.gz
 tar xvf hadoop-2.7.1.tar.gz
 mv hadoop-2.7.1 hadoop
 
-# Set HADOOP_HOME
 export HADOOP_HOME=/home/hadoopuser/hadoop
-# Set JAVA_HOME
-export JAVA_HOME=/usr/lib/jvm/java-8-oracle
 # Add Hadoop bin and sbin directory to PATH
 export PATH=$PATH:$HADOOP_HOME/bin
 export PATH=$PATH:$HADOOP_HOME/sbin
@@ -92,8 +84,8 @@ cp /mnt/bootstrap/hadoop_files/slaves /home/hadoopuser/hadoop/etc/hadoop/slaves
 dos2unix /mnt/bootstrap/hadoop_files/slaves /home/hadoopuser/hadoop/etc/hadoop/slaves
 
 bash /home/hadoopuser/hadoop/bin/hdfs namenode -format
-
-bash /home/hadoopuser/hadoop/sbin/start-dfs.sh
 EOF
 
+# Start Datanode and Yarn
+sudo -u hadoopuser bash /home/hadoopuser/hadoop/sbin/start-dfs.sh
 sudo -u hadoopuser bash /home/hadoopuser/hadoop/sbin/start-yarn.sh

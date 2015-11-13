@@ -48,11 +48,9 @@ dependencies {
     compile "org.flywaydb:flyway-core:3.2.1"
     compile "org.postgresql:postgresql:9.4-1201-jdbc41"
 
-    testCompile("org.springframework.boot:spring-boot-starter-test")
-    testCompile ("junit:junit:4.11")
     
-    compile files("src/main/resources/db/migration")
-
+    testCompile "org.springframework.boot:spring-boot-starter-test"
+    testCompile "junit:junit:4.11"
     compile("org.mockito:mockito-all:2.0.2-beta")
     compile("com.jayway.restassured:rest-assured:2.6.0")
     compile("org.assertj:assertj-core:3.2.0")
