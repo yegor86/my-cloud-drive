@@ -11,3 +11,11 @@
 4. Check that linux is up and running
     
     <code>$ vagrant ssh web</code>
+    
+
+## Re-Install VM with Web Server
+1. Rebuild the jar file
+
+    <code>$ gradle build</code>
+
+2. [Rebuild the container](docs/Docker.md)

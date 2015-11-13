@@ -35,6 +35,14 @@ public class FilesUsersRights {
     @Column(name = "permission")
     private Permissions permission;
 
+    public FilesUsersRights(){}
+
+    public FilesUsersRights (File file, User user, Permissions permission){
+        this.fileId = file;
+        this.ownerId = user;
+        this.permission = permission;
+    }
+
     public Long getId() {
         return id;
     }

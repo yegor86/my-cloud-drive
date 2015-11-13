@@ -1,5 +1,9 @@
 package org.odesamama.mcd.services;
 
+import org.odesamama.mcd.domain.File;
+import org.odesamama.mcd.domain.User;
+import org.odesamama.mcd.domain.enums.Permissions;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 
@@ -8,6 +12,11 @@ import java.net.URISyntaxException;
  */
 public interface FileService {
 
-    void uploadFileToHDFSServer(byte [] bytes, String fileName) throws URISyntaxException, IOException;
+    void uploadFileToHDFSServer(byte [] bytes, String fileName, String email) throws URISyntaxException, IOException;
 
+    void createFolder(String folderName, String Path, String email) throws IOException, URISyntaxException;
+
+    void createHomeDirectoryForUser(User user) throws URISyntaxException, IOException;
+
+    void saveUserRights(File file, User user, Permissions permissions);
 }

@@ -4,17 +4,12 @@
 #install a new ppa easily
 sudo apt-get -y install python-software-properties
 
-#add provider for oracle java
-sudo add-apt-repository -y ppa:webupd8team/java
-
+# openjdk
 sudo apt-get -y update
+sudo apt-get -y install openjdk-7-jdk
+sudo ln -s /usr/lib/jvm/java-1.7.0-openjdk-amd64 /usr/lib/jvm/java
 
-#accept copyrights for oracle-java8-installer
-echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections
-sudo apt-get -y install oracle-java8-installer
 sudo apt-get -y install dos2unix
-
-sudo update-java-alternatives -s java-8-oracle
 
 # Create hadoopgroup
 sudo addgroup hadoopgroup
@@ -43,13 +38,8 @@ wget http://www.eu.apache.org/dist/hadoop/core/hadoop-2.7.1/hadoop-2.7.1.tar.gz
 tar xvf hadoop-2.7.1.tar.gz
 mv hadoop-2.7.1 hadoop
 
-# Set HADOOP_HOME
 export HADOOP_HOME=/home/hadoopuser/hadoop
-# Set JAVA_HOME
-export JAVA_HOME=/usr/lib/jvm/java-8-oracle
-# Add Hadoop bin and sbin directory to PATH
-export PATH=$PATH:$HADOOP_HOME/bin
-export PATH=$PATH:$HADOOP_HOME/sbin
+export PATH=$PATH:$HADOOP_HOME/sbin:$HADOOP_HOME/bin
 
 #set enviroment variables
 cp /mnt/bootstrap/hadoop_files/.bashrc /home/hadoopuser/.bashrc
