@@ -113,10 +113,8 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# Set HADOOP_HOME
+
 export HADOOP_HOME=/home/hadoopuser/hadoop
-# Set JAVA_HOME
-export JAVA_HOME=/usr/lib/jvm/java-8-oracle
+export JAVA_HOME=/usr/lib/jvm/java
 # Add Hadoop bin and sbin directory to PATH
-export PATH="$PATH:$HADOOP_HOME/bin"
-export PATH="$PATH:$HADOOP_HOME/sbin"
+export PATH="$PATH:$HADOOP_HOME/sbin:$HADOOP_HOME/bin"

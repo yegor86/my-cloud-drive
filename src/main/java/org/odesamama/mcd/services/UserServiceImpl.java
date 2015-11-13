@@ -3,9 +3,6 @@ package org.odesamama.mcd.services;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import javax.annotation.Resource;
-
-import org.odesamama.mcd.domain.FilesUsersRights;
 import org.odesamama.mcd.domain.User;
 import org.odesamama.mcd.exeptions.EmailTakenException;
 import org.odesamama.mcd.multitenancy.TenantManager;
@@ -22,9 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    FileService fileService;
+    private FileService fileService;
 
-    @Resource
+    @Autowired
     private UserRepository userRepository;
 
     private TenantManager tenantManager = new TenantManager();
@@ -44,17 +41,12 @@ public class UserServiceImpl implements UserService {
             throw new EmailTakenException();
         }
 
-        String userUid = user.getUserEmail().substring(0, user.getUserEmail().indexOf('@'));
+        String userUid = user.getUserEmail().replace('@', '_');
         user.setUserUid(userUid);
 
         User savedUser = userRepository.save(user);
         tenantManager.create(user.getUserUid());
         fileService.createHomeDirectoryForUser(savedUser);
         return savedUser;
-    }
-
-    public FilesUsersRights grantAccess() {
-
-        return null;
     }
 }
