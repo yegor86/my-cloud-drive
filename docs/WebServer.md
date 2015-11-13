@@ -18,4 +18,4 @@
 
     <code>$ gradle build</code>
 
-2. [Rebuild the container](docs/Docker.md)
+2. [Rebuild the container](Docker.md)
