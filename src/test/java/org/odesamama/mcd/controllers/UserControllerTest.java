@@ -1,4 +1,4 @@
-package integrational;
+package org.odesamama.mcd.controllers;
 
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.http.ContentType;

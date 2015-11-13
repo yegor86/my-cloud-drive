@@ -1,4 +1,4 @@
-package service;
+package org.odesamama.mcd.service;
 
 import java.io.IOException;
 import java.net.URISyntaxException;

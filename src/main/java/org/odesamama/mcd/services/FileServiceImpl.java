@@ -1,5 +1,6 @@
 package org.odesamama.mcd.services;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -7,6 +8,7 @@ import org.odesamama.mcd.domain.File;
 import org.odesamama.mcd.domain.FilesUsersRights;
 import org.odesamama.mcd.domain.User;
 import org.odesamama.mcd.domain.enums.Permissions;
+import org.odesamama.mcd.exeptions.ResourceAlreadyExistsException;
 import org.odesamama.mcd.exeptions.UserNotExistsException;
 import org.odesamama.mcd.repositories.FileRepository;
 import org.odesamama.mcd.repositories.FileUserRightsRepository;
@@ -17,9 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -47,8 +47,10 @@ public class FileServiceImpl implements FileService{
     @Value("${hdfs.namenode.url}")
     private String nameNodeUrl;
 
+    private static final int MAX_EXTENSION_SIZE = 10;
+
     @Override
-    public void uploadFileToHDFSServer(byte[] bytes, String fileName, String email) throws IOException, URISyntaxException {
+    public void uploadFileToHDFSServer(byte[] bytes, String filePath, String email) throws IOException, URISyntaxException {
 
         User user = userRepository.findByEmail(email);
 
@@ -56,31 +58,43 @@ public class FileServiceImpl implements FileService{
             throw new UserNotExistsException();
         }
 
-        // save file
-        Path filePath = new Path(String.format("%s/%s/%s",nameNodeUrl , user.getUserId(), fileName));
+        if(fileRepository.getFileInfoByFilePathAndEmali(email, filePath) != null){
+            throw new ResourceAlreadyExistsException();
+        }
 
-        saveFileToHDFS(filePath, conf, bytes);
+        // save file
+        Path fileP = createPathForFile(user.getUserId(), filePath);
+
+        saveFileToHDFS(fileP, conf, bytes);
 
         //save file metadata
-        File file = saveFileMetadata(user, fileName, user.getUserId().toString(), bytes.length, false);
+        File file = saveFileMetadata(user, filePath, bytes.length, false);
         //save owner access to file
         saveUserRights(file, user, Permissions.READ_MODIFY);
     }
 
+    private Path createPathForFile(Long userId, String fileName){
+        return new Path(String.format("%s/%s/%s",nameNodeUrl , userId, fileName));
+    }
+
     @Override
-    public void createFolder(String folderName, String path, String email) throws IOException, URISyntaxException {
+    public void createFolder(String path, String email) throws IOException, URISyntaxException {
         User user = userRepository.findByEmail(email);
 
         if(user == null){
             throw new UserNotExistsException();
         }
 
-        Path filePath = new Path(String.format("%s/%s/%s/%s",nameNodeUrl , user.getUserId(),path, folderName));
+        if(fileRepository.getFileInfoByFilePathAndEmali(email, path) != null){
+            throw new ResourceAlreadyExistsException();
+        }
+
+        Path filePath = new Path(String.format("%s/%s/%s", nameNodeUrl, user.getUserId(), path));
 
         mkDirsHDFS(filePath, conf);
 
         //save file metadata
-        File file = saveFileMetadata(user, folderName, user.getUserId().toString(), 0, true);
+        File file = saveFileMetadata(user, path, 0, true);
         //save owner access to file
         saveUserRights(file, user, Permissions.READ_MODIFY);
     }
@@ -103,14 +117,20 @@ public class FileServiceImpl implements FileService{
     }
 
 
-    private File saveFileMetadata(User user, String fileName, String userId, int length,Boolean isDirectory){
-        File file = new File(user,fileName,user.getUserId().toString(),length, isDirectory);
+    private File saveFileMetadata(User user, String filePath, int length,Boolean isDirectory){
+        int index = filePath.lastIndexOf("/");
+        String fileName = filePath;
+        if(index > 0){
+            fileName = filePath.substring(index);
+        }
+        File file = new File(user,fileName,filePath,length, isDirectory);
+        String ext = FilenameUtils.getExtension(fileName);
+        file.setExtension(ext);
         return fileRepository.save(file);
     }
 
     @Override
     public void createHomeDirectoryForUser(User user) throws URISyntaxException, IOException {
-        Configuration conf = new Configuration();
         Path directoryPath = new Path(String.format("%s/%s/",nameNodeUrl,user.getUserId()));
 
         try (FileSystem fileSystem = FileSystem.get(new URI(nameNodeUrl), conf)) {
@@ -122,6 +142,20 @@ public class FileServiceImpl implements FileService{
     public void saveUserRights(File file, User user, Permissions permissions) {
         FilesUsersRights rights = new FilesUsersRights(file, user, Permissions.READ_MODIFY);
         rightsRepository.save(rights);
+    }
+
+    @Override
+    public InputStream getFile(String filePath, String email) throws URISyntaxException, IOException {
+        User user = userRepository.findByEmail(email);
+
+        if(user == null){
+            throw new UserNotExistsException();
+        }
+
+        Path fileP = createPathForFile(user.getUserId(), filePath);
+
+        FileSystem fileSystem = FileSystem.get(new URI(nameNodeUrl), conf);
+        return fileSystem.open(fileP);
     }
 
 }
