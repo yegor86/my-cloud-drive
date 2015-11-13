@@ -24,8 +24,8 @@ public class UserRepositoryImpl implements CustomUserRepository {
 
     @Override
     public User findByEmail(String email) {
-        TypedQuery<User> q = entityManager.createQuery("select u from User u where u.userEmail = :userEmail",
-                User.class);
+        TypedQuery<User> q = entityManager.createQuery("select u from User u where u.userEmail = :email", User.class);
+        q.setParameter("email", email);
         return !q.getResultList().isEmpty() ? q.getResultList().get(0) : null;
     }
 
