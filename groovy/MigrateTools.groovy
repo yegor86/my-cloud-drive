@@ -1,4 +1,3 @@
-import groovy.sql.Sql
 import org.flywaydb.core.Flyway
 import org.flywaydb.core.internal.util.jdbc.DriverDataSource
 
