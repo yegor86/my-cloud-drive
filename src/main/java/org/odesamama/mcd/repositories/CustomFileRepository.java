@@ -10,5 +10,5 @@ import java.util.List;
 public interface CustomFileRepository {
     File getFileInfoByFilePathAndEmali(String email, String path);
 
-    List<File> getFilesInfoByFilePathAndEmali(String email, String path);
+    List<File> getFilesListForGivenDirectoryPath(String email, String path);
 }

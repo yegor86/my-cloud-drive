@@ -43,6 +43,8 @@ public class FileControllerTest {
 
     private static final String CREATE_FOLDER = "/files/createfolder";
 
+    public static final String GET_FILE_LIST_BY_PATH = "/files/list/%s/%s";
+
     @Before
     public void setup(){
         RestAssured.port = SERVER_PORT;
@@ -87,4 +89,11 @@ public class FileControllerTest {
             Assert.assertTrue("Method thrown unexpected exception" + e.getStackTrace(),false);
         }
     }
+
+    @Test
+    public void loadFilesByPath(){
+        System.out.println(when().get(String.format(GET_FILE_LIST_BY_PATH, USER_EMAIL,"")).asString());
+    }
 }
+
+

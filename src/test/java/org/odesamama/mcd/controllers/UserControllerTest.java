@@ -26,10 +26,10 @@ import static com.jayway.restassured.RestAssured.when;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
-@IntegrationTest("server.port:3030")
+@IntegrationTest("server.port:3040")
 public class UserControllerTest {
 
-    private static final int SERVER_PORT = 3030;
+    private static final int SERVER_PORT = 3040;
 
     private static final String CREATE_USER = "/users/create";
 
