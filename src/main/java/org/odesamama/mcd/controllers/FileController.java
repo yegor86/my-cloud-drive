@@ -1,5 +1,6 @@
 package org.odesamama.mcd.controllers;
 
+import org.apache.commons.lang3.StringUtils;
 import org.odesamama.mcd.domain.File;
 import org.odesamama.mcd.exeptions.NoSuchResourceException;
 import org.odesamama.mcd.repositories.FileRepository;
@@ -19,7 +20,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.List;
 
 /**
  * Created by starnakin on 07.10.2015.
@@ -97,15 +97,16 @@ public class FileController {
     private Iterable<File> getFileListForGivenPath(@PathVariable String email, HttpServletRequest request){
         String filePath = getFilePathFromRequest(request,email);
 
-        File file = fileRepository.getFileInfoByFilePathAndEmali(email, filePath);
+        //if file is not set return files from root folder
+        if(StringUtils.trimToNull(filePath) != null) {
+            File file = fileRepository.getFileInfoByFilePathAndEmali(email, filePath);
 
-        if(!file.getIsDirectory()){
-            throw new NoSuchResourceException();
+            if (!file.isFolder()) {
+                throw new NoSuchResourceException();
+            }
         }
 
-        List<File> files = fileRepository.getFilesInfoByFilePathAndEmali(email, filePath);
-
-        return files;
+        return fileRepository.getFilesListForGivenDirectoryPath(email, filePath);
     }
 
     private String getFilePathFromRequest(HttpServletRequest request, String email){

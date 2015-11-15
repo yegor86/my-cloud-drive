@@ -63,9 +63,9 @@ public class FileServiceImpl implements FileService{
         }
 
         // save file
-        Path fileP = createPathForFile(user.getUserId(), filePath);
+        Path path = createPathForFile(user.getUserId(), filePath);
 
-        saveFileToHDFS(fileP, conf, bytes);
+        saveFileToHDFS(path, conf, bytes);
 
         //save file metadata
         File file = saveFileMetadata(user, filePath, bytes.length, false);
@@ -121,7 +121,7 @@ public class FileServiceImpl implements FileService{
         int index = filePath.lastIndexOf("/");
         String fileName = filePath;
         if(index > 0){
-            fileName = filePath.substring(index);
+            fileName = filePath.substring(index + 1);
         }
         File file = new File(user,fileName,filePath,length, isDirectory);
         String ext = FilenameUtils.getExtension(fileName);
@@ -152,10 +152,10 @@ public class FileServiceImpl implements FileService{
             throw new UserNotExistsException();
         }
 
-        Path fileP = createPathForFile(user.getUserId(), filePath);
+        Path path = createPathForFile(user.getUserId(), filePath);
 
         FileSystem fileSystem = FileSystem.get(new URI(nameNodeUrl), conf);
-        return fileSystem.open(fileP);
+        return fileSystem.open(path);
     }
 
 }

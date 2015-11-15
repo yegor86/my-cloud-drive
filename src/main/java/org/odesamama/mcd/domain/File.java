@@ -15,7 +15,7 @@ import java.util.Date;
 @Table(name ="files")
 @NamedQueries({
         @NamedQuery(name = "File.getFileInfoByFilePathAndEmali", query = "from File where owner.userEmail = :email and filePath = :path"),
-        @NamedQuery(name = "File.getFilesListWithoutRoot", query = "from File where owner.userEmail = :email and filePath like :path and filePath <> :rootpath")})
+        @NamedQuery(name = "File.getFilesListForGivenFolderWithoutRoot", query = "from File where owner.userEmail = :email and filePath like :path and filePath <> :rootpath and (LENGTH(file_path) - LENGTH(REPLACE(file_path, '/', ''))) = :dashCount")})
 public class File {
 
     @Id
@@ -45,7 +45,7 @@ public class File {
     private Date updated;
 
     @Column(name ="is_folder")
-    private Boolean isDirectory;
+    private Boolean isFolder;
 
     @Column(name="extension")
     private String extension;
@@ -65,12 +65,12 @@ public class File {
         updated = new Date();
     }
 
-    public File(User user, String fileName, String path, Integer fileSize, Boolean isDirectory){
+    public File(User user, String fileName, String path, Integer fileSize, Boolean isFolder){
         this.owner = user;
         this.fileName = fileName;
         this.filePath = path;
         this.fileSize = fileSize;
-        this.isDirectory = isDirectory;
+        this.isFolder = isFolder;
     }
 
     public String getExtension() {
@@ -129,8 +129,8 @@ public class File {
         return updated;
     }
 
-    public Boolean getIsDirectory() {
-        return isDirectory;
+    public Boolean isFolder() {
+        return isFolder;
     }
 
     @Override
@@ -148,7 +148,7 @@ public class File {
                 .append(fileSize, file.fileSize)
                 .append(owner, file.owner)
                 .append(created, file.created)
-                .append(isDirectory, file.isDirectory)
+                .append(isFolder, file.isFolder)
                 .isEquals();
     }
 
@@ -161,7 +161,7 @@ public class File {
                 .append(fileSize)
                 .append(owner)
                 .append(created)
-                .append(isDirectory)
+                .append(isFolder)
                 .toHashCode();
     }
 }
