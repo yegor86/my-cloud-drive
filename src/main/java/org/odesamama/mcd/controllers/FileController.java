@@ -117,7 +117,7 @@ public class FileController {
         AntPathMatcher apm = new AntPathMatcher();
         filePath = apm.extractPathWithinPattern(bestMatchPattern, filePath);
 
-        return filePath.replace(email,"369591434806561");
+        return filePath.replace(email,"");
     }
 }
 
