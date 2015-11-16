@@ -8,7 +8,7 @@ import java.util.List;
  * Created by starnakin on 12.11.2015.
  */
 public interface CustomFileRepository {
-    File getFileInfoByFilePathAndEmali(String email, String path);
+    File getFileInfoByFilePathAndEmail(String email, String path);
 
     List<File> getFilesListForGivenDirectoryPath(String email, String path);
 }
