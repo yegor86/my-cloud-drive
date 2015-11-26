@@ -3,7 +3,6 @@ package org.odesamama.mcd.domain;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -16,7 +15,7 @@ import java.util.Date;
 @Table(name ="files")
 @NamedQueries({
         @NamedQuery(name = "File.getFileInfoByFilePathAndEmail", query = "from File where owner.userEmail = :email and filePath = :path"),
-        @NamedQuery(name = "File.getFilesListForGivenFolder", query = "from File where parentFile.id = :parentId")})
+        @NamedQuery(name = "File.getFilesListForGivenFolder", query = "from File where parent = :parent")})
 public class File {
 
     @Id
@@ -55,7 +54,7 @@ public class File {
     @ManyToOne(fetch=FetchType.LAZY)
     @JsonBackReference
     @JoinColumn(name="parent_file_id")
-    private File parentFile;
+    private File parent;
 
     public File(){
 
@@ -77,16 +76,16 @@ public class File {
         this.fileName = fileName;
         this.filePath = filePath;
         this.fileSize = fileSize;
-        this.parentFile = parentId;
+        this.parent = parentId;
         this.isFolder = isFolder;
     }
 
-    public File getParentFile() {
-        return parentFile;
+    public File getParent() {
+        return parent;
     }
 
-    public void setParentFile(File parentFile) {
-        this.parentFile = parentFile;
+    public void setParent(File parent) {
+        this.parent = parent;
     }
 
     public String getExtension() {

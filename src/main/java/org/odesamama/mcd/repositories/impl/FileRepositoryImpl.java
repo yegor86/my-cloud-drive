@@ -40,6 +40,6 @@ public class FileRepositoryImpl implements CustomFileRepository {
         }
 
         return entityManager.createNamedQuery("File.getFilesListForGivenFolder", File.class)
-                .setParameter("parentId", parentFolder.getId()).getResultList();
+                .setParameter("parent", parentFolder).getResultList();
     }
 }
