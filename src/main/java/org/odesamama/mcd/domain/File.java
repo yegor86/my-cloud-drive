@@ -3,6 +3,7 @@ package org.odesamama.mcd.domain;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -14,8 +15,8 @@ import java.util.Date;
 @Entity
 @Table(name ="files")
 @NamedQueries({
-        @NamedQuery(name = "File.getFileInfoByFilePathAndEmali", query = "from File where owner.userEmail = :email and filePath = :path"),
-        @NamedQuery(name = "File.getFilesListForGivenFolderWithoutRoot", query = "from File where owner.userEmail = :email and filePath like :path and filePath <> :rootpath and (LENGTH(file_path) - LENGTH(REPLACE(file_path, '/', ''))) = :dashCount")})
+        @NamedQuery(name = "File.getFileInfoByFilePathAndEmail", query = "from File where owner.userEmail = :email and filePath = :path"),
+        @NamedQuery(name = "File.getFilesListForGivenFolder", query = "from File where parentFile = :parentId")})
 public class File {
 
     @Id
@@ -27,7 +28,8 @@ public class File {
     @Column(name = "file_name")
     private String fileName;
 
-    @Column(name = "file_path")
+
+    @Column(name ="file_path")
     private String filePath;
 
     @Column(name = "file_size")
@@ -50,6 +52,9 @@ public class File {
     @Column(name="extension")
     private String extension;
 
+    @Column(name="parent_file_id")
+    private Long parentFile;
+
     public File(){
 
     }
@@ -65,12 +70,21 @@ public class File {
         updated = new Date();
     }
 
-    public File(User user, String fileName, String path, Integer fileSize, Boolean isFolder){
+    public File(User user, String fileName, String filePath, Long parentId, Integer fileSize, Boolean isFolder){
         this.owner = user;
         this.fileName = fileName;
-        this.filePath = path;
+        this.filePath = filePath;
         this.fileSize = fileSize;
+        this.parentFile = parentId;
         this.isFolder = isFolder;
+    }
+
+    public Long getParentFile() {
+        return parentFile;
+    }
+
+    public void setParentFile(Long parentFile) {
+        this.parentFile = parentFile;
     }
 
     public String getExtension() {

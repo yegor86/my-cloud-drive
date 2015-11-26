@@ -120,10 +120,18 @@ public class FileServiceImpl implements FileService {
     private File saveFileMetadata(User user, String filePath, int length, Boolean isDirectory) {
         int index = filePath.lastIndexOf("/");
         String fileName = filePath;
+        File parent = null;
         if (index > 0) {
             fileName = filePath.substring(index + 1);
+
+            String parentPath = filePath.substring(0, index);
+            parent = fileRepository.getFileInfoByFilePathAndEmail(user.getUserEmail(), parentPath);
         }
-        File file = new File(user, fileName, filePath, length, isDirectory);
+
+
+        Long id = parent != null ? parent.getId() : null;
+
+        File file = new File(user, fileName, filePath, id, length, isDirectory);
         String ext = FilenameUtils.getExtension(fileName);
         file.setExtension(ext);
         return fileRepository.save(file);
