@@ -16,7 +16,7 @@ import java.util.Date;
 @Table(name ="files")
 @NamedQueries({
         @NamedQuery(name = "File.getFileInfoByFilePathAndEmail", query = "from File where owner.userEmail = :email and filePath = :path"),
-        @NamedQuery(name = "File.getFilesListForGivenFolder", query = "from File where parentFile = :parentId")})
+        @NamedQuery(name = "File.getFilesListForGivenFolder", query = "from File where parentFile.id = :parentId")})
 public class File {
 
     @Id
@@ -52,8 +52,10 @@ public class File {
     @Column(name="extension")
     private String extension;
 
-    @Column(name="parent_file_id")
-    private Long parentFile;
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JsonBackReference
+    @JoinColumn(name="parent_file_id")
+    private File parentFile;
 
     public File(){
 
@@ -70,7 +72,7 @@ public class File {
         updated = new Date();
     }
 
-    public File(User user, String fileName, String filePath, Long parentId, Integer fileSize, Boolean isFolder){
+    public File(User user, String fileName, String filePath, File parentId, Integer fileSize, Boolean isFolder){
         this.owner = user;
         this.fileName = fileName;
         this.filePath = filePath;
@@ -79,11 +81,11 @@ public class File {
         this.isFolder = isFolder;
     }
 
-    public Long getParentFile() {
+    public File getParentFile() {
         return parentFile;
     }
 
-    public void setParentFile(Long parentFile) {
+    public void setParentFile(File parentFile) {
         this.parentFile = parentFile;
     }
 

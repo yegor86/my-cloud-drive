@@ -128,10 +128,7 @@ public class FileServiceImpl implements FileService {
             parent = fileRepository.getFileInfoByFilePathAndEmail(user.getUserEmail(), parentPath);
         }
 
-
-        Long id = parent != null ? parent.getId() : null;
-
-        File file = new File(user, fileName, filePath, id, length, isDirectory);
+        File file = new File(user, fileName, filePath, parent, length, isDirectory);
         String ext = FilenameUtils.getExtension(fileName);
         file.setExtension(ext);
         return fileRepository.save(file);
