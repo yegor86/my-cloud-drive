@@ -39,7 +39,7 @@ public class FileControllerTest {
 
     private static final String USER_EMAIL = "admin@mail.com";
 
-    private static final String FILE_NAME = "test.txt";
+    private static final String FILE_NAME = "test.jpg";
 
     private static final String CREATE_FOLDER = "/files/createfolder";
 

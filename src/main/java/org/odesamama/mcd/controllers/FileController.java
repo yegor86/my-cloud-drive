@@ -82,9 +82,9 @@ public class FileController {
             throw new NoSuchResourceException();
         }
 
-        String headerValue = String.format("attachment; filename=\"%s\"", file.getFileName());
+        String headerValue = String.format("attachment; filename=\"%s\"", file.getName());
 
-        return ResponseEntity.ok().contentLength(file.getFileSize()).contentType(mediaType)
+        return ResponseEntity.ok().contentLength(file.getSize()).contentType(mediaType)
                 .header(HttpHeaders.CONTENT_DISPOSITION, headerValue)
                 .body(new InputStreamResource(fileService.getFile(filePath, email)));
 

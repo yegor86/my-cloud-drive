@@ -5,6 +5,7 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import javax.persistence.*;
+import java.net.URLConnection;
 import java.util.Date;
 
 /**
@@ -14,7 +15,7 @@ import java.util.Date;
 @Entity
 @Table(name ="files")
 @NamedQueries({
-        @NamedQuery(name = "File.getFileInfoByFilePathAndEmail", query = "from File where owner.userEmail = :email and filePath = :path"),
+        @NamedQuery(name = "File.getFileInfoByFilePathAndEmail", query = "from File where owner.userEmail = :email and path = :path"),
         @NamedQuery(name = "File.getFilesListForGivenFolder", query = "from File where parent = :parent")})
 public class File {
 
@@ -25,14 +26,14 @@ public class File {
     private Long id;
 
     @Column(name = "file_name")
-    private String fileName;
+    private String name;
 
 
     @Column(name ="file_path")
-    private String filePath;
+    private String path;
 
     @Column(name = "file_size")
-    private Integer fileSize;
+    private Integer size;
 
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name ="owner_id")
@@ -56,6 +57,9 @@ public class File {
     @JoinColumn(name="parent_file_id")
     private File parent;
 
+    @Transient
+    private String type;
+
     public File(){
 
     }
@@ -71,11 +75,11 @@ public class File {
         updated = new Date();
     }
 
-    public File(User user, String fileName, String filePath, File parentId, Integer fileSize, Boolean isFolder){
+    public File(User user, String name, String path, File parentId, Integer size, Boolean isFolder){
         this.owner = user;
-        this.fileName = fileName;
-        this.filePath = filePath;
-        this.fileSize = fileSize;
+        this.name = name;
+        this.path = path;
+        this.size = size;
         this.parent = parentId;
         this.isFolder = isFolder;
     }
@@ -104,28 +108,28 @@ public class File {
         this.id = id;
     }
 
-    public String getFileName() {
-        return fileName;
+    public String getName() {
+        return name;
     }
 
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getFilePath() {
-        return filePath;
+    public String getPath() {
+        return path;
     }
 
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
+    public void setPath(String path) {
+        this.path = path;
     }
 
-    public Integer getFileSize() {
-        return fileSize;
+    public Integer getSize() {
+        return size;
     }
 
-    public void setFileSize(Integer fileSize) {
-        this.fileSize = fileSize;
+    public void setSize(Integer size) {
+        this.size = size;
     }
 
     public User getOwner() {
@@ -148,6 +152,13 @@ public class File {
         return isFolder;
     }
 
+    public String getType() {
+        if (path != null && path.contains(".")){
+            return URLConnection.guessContentTypeFromName(path);
+        }
+        return "";
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -158,9 +169,9 @@ public class File {
 
         return new EqualsBuilder()
                 .append(id, file.id)
-                .append(fileName, file.fileName)
-                .append(filePath, file.filePath)
-                .append(fileSize, file.fileSize)
+                .append(name, file.name)
+                .append(path, file.path)
+                .append(size, file.size)
                 .append(owner, file.owner)
                 .append(created, file.created)
                 .append(isFolder, file.isFolder)
@@ -171,9 +182,9 @@ public class File {
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
                 .append(id)
-                .append(fileName)
-                .append(filePath)
-                .append(fileSize)
+                .append(name)
+                .append(path)
+                .append(size)
                 .append(owner)
                 .append(created)
                 .append(isFolder)
