@@ -113,9 +113,11 @@ public class FileController {
         if (StringUtils.trimToNull(filePath) != null) {
             File file = fileRepository.getFileInfoByFilePathAndEmail(email, filePath);
 
-            if (!file.isFolder()) {
-                throw new NoSuchResourceException();
+            if (file != null && file.isFolder()) {
+                return;
             }
         }
+
+        throw new NoSuchResourceException();
     }
 }
