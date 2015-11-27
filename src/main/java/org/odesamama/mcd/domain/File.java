@@ -14,8 +14,8 @@ import java.util.Date;
 @Entity
 @Table(name ="files")
 @NamedQueries({
-        @NamedQuery(name = "File.getFileInfoByFilePathAndEmali", query = "from File where owner.userEmail = :email and filePath = :path"),
-        @NamedQuery(name = "File.getFilesListForGivenFolderWithoutRoot", query = "from File where owner.userEmail = :email and filePath like :path and filePath <> :rootpath and (LENGTH(file_path) - LENGTH(REPLACE(file_path, '/', ''))) = :dashCount")})
+        @NamedQuery(name = "File.getFileInfoByFilePathAndEmail", query = "from File where owner.userEmail = :email and filePath = :path"),
+        @NamedQuery(name = "File.getFilesListForGivenFolder", query = "from File where parent = :parent")})
 public class File {
 
     @Id
@@ -27,7 +27,8 @@ public class File {
     @Column(name = "file_name")
     private String fileName;
 
-    @Column(name = "file_path")
+
+    @Column(name ="file_path")
     private String filePath;
 
     @Column(name = "file_size")
@@ -50,6 +51,11 @@ public class File {
     @Column(name="extension")
     private String extension;
 
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JsonBackReference
+    @JoinColumn(name="parent_file_id")
+    private File parent;
+
     public File(){
 
     }
@@ -65,12 +71,21 @@ public class File {
         updated = new Date();
     }
 
-    public File(User user, String fileName, String path, Integer fileSize, Boolean isFolder){
+    public File(User user, String fileName, String filePath, File parentId, Integer fileSize, Boolean isFolder){
         this.owner = user;
         this.fileName = fileName;
-        this.filePath = path;
+        this.filePath = filePath;
         this.fileSize = fileSize;
+        this.parent = parentId;
         this.isFolder = isFolder;
+    }
+
+    public File getParent() {
+        return parent;
+    }
+
+    public void setParent(File parent) {
+        this.parent = parent;
     }
 
     public String getExtension() {
