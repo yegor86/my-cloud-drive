@@ -82,9 +82,9 @@ public class FileController {
             throw new NoSuchResourceException();
         }
 
-        String headerValue = String.format("attachment; filename=\"%s\"", file.getFileName());
+        String headerValue = String.format("attachment; filename=\"%s\"", file.getName());
 
-        return ResponseEntity.ok().contentLength(file.getFileSize()).contentType(mediaType)
+        return ResponseEntity.ok().contentLength(file.getSize()).contentType(mediaType)
                 .header(HttpHeaders.CONTENT_DISPOSITION, headerValue)
                 .body(new InputStreamResource(fileService.getFile(filePath, email)));
 
@@ -113,9 +113,11 @@ public class FileController {
         if (StringUtils.trimToNull(filePath) != null) {
             File file = fileRepository.getFileInfoByFilePathAndEmail(email, filePath);
 
-            if (!file.isFolder()) {
-                throw new NoSuchResourceException();
+            if (file != null && file.isFolder()) {
+                return;
             }
         }
+
+        throw new NoSuchResourceException();
     }
 }
