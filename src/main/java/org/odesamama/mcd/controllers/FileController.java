@@ -59,7 +59,6 @@ public class FileController {
             throws IOException, URISyntaxException {
 
         fileService.createFolder(path, email);
-
         return HttpStatus.OK;
     }
 
@@ -104,20 +103,16 @@ public class FileController {
         String bestMatchPattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
 
         AntPathMatcher apm = new AntPathMatcher();
-        filePath = apm.extractPathWithinPattern(bestMatchPattern, filePath);
-
-        return filePath.replace(email, "");
+        return "/" + apm.extractPathWithinPattern(bestMatchPattern, filePath);
     }
 
     private void validateFolder(String email, String filePath) {
         if (StringUtils.trimToNull(filePath) != null) {
             File file = fileRepository.getFileInfoByFilePathAndEmail(email, filePath);
 
-            if (file != null && file.isFolder()) {
-                return;
+            if (file == null || !file.isFolder()) {
+                throw new NoSuchResourceException();
             }
         }
-
-        throw new NoSuchResourceException();
     }
 }

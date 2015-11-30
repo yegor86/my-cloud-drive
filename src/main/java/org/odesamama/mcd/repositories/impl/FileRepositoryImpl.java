@@ -1,6 +1,6 @@
 package org.odesamama.mcd.repositories.impl;
 
-import java.nio.file.NotDirectoryException;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -35,11 +35,16 @@ public class FileRepositoryImpl implements CustomFileRepository {
 
         File parentFolder = getFileInfoByFilePathAndEmail(email, path);
 
-        if(parentFolder == null || !parentFolder.isFolder()){
+        if (parentFolder == null || !parentFolder.isFolder()) {
             throw new NoSuchResourceException();
         }
 
         return entityManager.createNamedQuery("File.getFilesListForGivenFolder", File.class)
                 .setParameter("parent", parentFolder).getResultList();
+    }
+
+    @Override
+    public List<File> listFiles(String email, String path) {
+        return Collections.emptyList();
     }
 }
