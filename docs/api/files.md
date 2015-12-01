@@ -9,7 +9,7 @@ $ curl \
 #### /files/createfolder
 ```bash
 $ curl -i -X POST \
-  -F "path=testfolder" \
+  -F "path=/testfolder" \
   -F "email=admin@mail.com" \
   http://localhost:3030/files/createfolder
 ```
@@ -17,7 +17,7 @@ $ curl -i -X POST \
 #### /files/upload
 ```bash
 $ curl -i -X POST \
-  -F "filePath=file1.txt" \
+  -F "filePath=/file1.txt" \
   -F "file=@file1.txt" \
   -F "email=admin@mail.com" \
   http://localhost:3030/files/upload

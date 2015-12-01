@@ -84,11 +84,11 @@ public class FileServiceImpl implements FileService {
             throw new ResourceAlreadyExistsException();
         }
 
-        Path hdfsPath = new Path(String.format("%s/%s/%s", nameNodeUrl, email, relativePath));
-        mkDirsHDFS(hdfsPath, conf);
-
         File file = saveFileMetadata(user, relativePath, 0, true);
         saveUserRights(file, user, Permissions.READ_MODIFY);
+
+        Path hdfsPath = new Path(String.format("%s/%s/%s", nameNodeUrl, email, relativePath));
+        mkDirsHDFS(hdfsPath, conf);
     }
 
     // don't return error if folder exists
