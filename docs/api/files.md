@@ -23,12 +23,12 @@ $ curl -i -X POST \
   http://localhost:3030/files/upload
 ```
 
-#### files/list/${email}/${dirPath}
+#### /files/list/${email}/${dirPath}
 ```bash
 $ curl -i \
   http://localhost:3030/files/list/admin@mail.com/folder
 ```
-#### files/download/${email}/${filePath}
+#### /files/download/${email}/${filePath}
 ```bash
 $ curl -i \
   http://localhost:3030/files/download/admin@mail.com/file
