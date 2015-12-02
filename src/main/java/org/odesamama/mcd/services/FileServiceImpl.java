@@ -12,6 +12,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.odesamama.mcd.domain.File;
+import org.odesamama.mcd.domain.FileBuilder;
 import org.odesamama.mcd.domain.FilesUsersRights;
 import org.odesamama.mcd.domain.User;
 import org.odesamama.mcd.domain.enums.Permissions;
@@ -64,39 +65,30 @@ public class FileServiceImpl implements FileService {
             throw new ResourceAlreadyExistsException();
         }
 
-        Path path = new Path(String.format("%s/%s/%s", nameNodeUrl, email, filePath));
-
-        saveFileToHDFS(path, conf, bytes);
-
         File file = saveFileMetadata(user, filePath, bytes.length, false);
         saveUserRights(file, user, Permissions.READ_MODIFY);
+
+        Path path = new Path(String.format("%s/%s/%s", nameNodeUrl, email, filePath));
+        saveFileToHDFS(path, conf, bytes);
     }
 
-    // private Path createPathForFile(Long userId, String fileName) {
-    // return new Path(String.format("%s/%s/%s", nameNodeUrl, userId,
-    // fileName));
-    // }
-
     @Override
-    public void createFolder(String path, String email) throws IOException, URISyntaxException {
+    public void createFolder(String relativePath, String email) throws IOException, URISyntaxException {
         User user = userRepository.findByEmail(email);
 
         if (user == null) {
             throw new UserNotExistsException();
         }
 
-        if (fileRepository.getFileInfoByFilePathAndEmail(email, path) != null) {
+        if (fileRepository.getFileInfoByFilePathAndEmail(email, relativePath) != null) {
             throw new ResourceAlreadyExistsException();
         }
 
-        Path filePath = new Path(String.format("%s/%s/%s", nameNodeUrl, email, path));
-
-        mkDirsHDFS(filePath, conf);
-
-        // save file metadata
-        File file = saveFileMetadata(user, path, 0, true);
-        // save owner access to file
+        File file = saveFileMetadata(user, relativePath, 0, true);
         saveUserRights(file, user, Permissions.READ_MODIFY);
+
+        Path hdfsPath = new Path(String.format("%s/%s/%s", nameNodeUrl, email, relativePath));
+        mkDirsHDFS(hdfsPath, conf);
     }
 
     // don't return error if folder exists
@@ -117,20 +109,22 @@ public class FileServiceImpl implements FileService {
         }
     }
 
-    private File saveFileMetadata(User user, String filePath, int fileSize, Boolean isDirectory) {
-        int index = filePath.lastIndexOf("/");
-        String fileName = filePath;
-        File parent = null;
-        if (index > 0) {
-            fileName = filePath.substring(index + 1);
-
-            String parentPath = filePath.substring(0, index);
-            parent = fileRepository.getFileInfoByFilePathAndEmail(user.getUserEmail(), parentPath);
+    private File saveFileMetadata(User user, String filePath, int fileSize, Boolean isFolder) {
+        if (!filePath.startsWith("/")) {
+            throw new IllegalArgumentException("File path must start with '/'");
         }
 
-        File file = new File(user, fileName, filePath, parent, fileSize, isDirectory);
-        String ext = FilenameUtils.getExtension(fileName);
-        file.setExtension(ext);
+        int index = filePath.lastIndexOf("/");
+        String fileName = filePath.substring(index + 1);
+        String parentPath = filePath.substring(0, index);
+
+        // Handle root file
+        parentPath = parentPath.isEmpty() ? "/" : parentPath;
+
+        File parent = fileRepository.getFileInfoByFilePathAndEmail(user.getUserEmail(), parentPath);
+
+        File file = new FileBuilder().owner(user).name(fileName).path(filePath).parent(parent).size(fileSize)
+                .isFolder(isFolder).extension(FilenameUtils.getExtension(fileName)).build();
         return fileRepository.save(file);
     }
 

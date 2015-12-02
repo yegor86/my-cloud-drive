@@ -1,22 +1,38 @@
 package org.odesamama.mcd.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import java.net.URLConnection;
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-import javax.persistence.*;
-import java.net.URLConnection;
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 /**
  * Created by starnakin on 25.09.2015.
  */
 
 @Entity
-@Table(name ="files")
+@Table(name = "files")
 @NamedQueries({
         @NamedQuery(name = "File.getFileInfoByFilePathAndEmail", query = "from File where owner.userEmail = :email and path = :path"),
-        @NamedQuery(name = "File.getFilesListForGivenFolder", query = "from File where parent = :parent")})
+        @NamedQuery(name = "File.getFilesListForGivenFolder", query = "from File where parent = :parent") })
 public class File {
 
     @Id
@@ -28,15 +44,14 @@ public class File {
     @Column(name = "file_name")
     private String name;
 
-
-    @Column(name ="file_path")
+    @Column(name = "file_path")
     private String path;
 
     @Column(name = "file_size")
     private Integer size;
 
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name ="owner_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
     @JsonBackReference
     private User owner;
 
@@ -46,42 +61,33 @@ public class File {
     @Column(name = "update_date")
     private Date updated;
 
-    @Column(name ="is_folder")
+    @Column(name = "is_folder")
     private Boolean isFolder;
 
-    @Column(name="extension")
+    @Column(name = "extension")
     private String extension;
 
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
-    @JoinColumn(name="parent_file_id")
+    @JoinColumn(name = "parent_file_id")
     private File parent;
 
     @Transient
     private String type;
 
-    public File(){
+    public File() {
 
     }
 
     @PreUpdate
-    public void preUpdate(){
+    public void preUpdate() {
         updated = new Date();
     }
 
     @PrePersist
-    public void preCreate(){
+    public void preCreate() {
         created = new Date();
         updated = new Date();
-    }
-
-    public File(User user, String name, String path, File parentId, Integer size, Boolean isFolder){
-        this.owner = user;
-        this.name = name;
-        this.path = path;
-        this.size = size;
-        this.parent = parentId;
-        this.isFolder = isFolder;
     }
 
     public File getParent() {
@@ -132,6 +138,10 @@ public class File {
         this.size = size;
     }
 
+    public void setFolder(Boolean isFolder) {
+        this.isFolder = isFolder;
+    }
+
     public User getOwner() {
         return owner;
     }
@@ -153,7 +163,7 @@ public class File {
     }
 
     public String getType() {
-        if (path != null && path.contains(".")){
+        if (path != null && path.contains(".")) {
             return URLConnection.guessContentTypeFromName(path);
         }
         return "";
@@ -161,33 +171,22 @@ public class File {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o)
+            return true;
 
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass())
+            return false;
 
         File file = (File) o;
 
-        return new EqualsBuilder()
-                .append(id, file.id)
-                .append(name, file.name)
-                .append(path, file.path)
-                .append(size, file.size)
-                .append(owner, file.owner)
-                .append(created, file.created)
-                .append(isFolder, file.isFolder)
-                .isEquals();
+        return new EqualsBuilder().append(id, file.id).append(name, file.name).append(path, file.path)
+                .append(size, file.size).append(owner, file.owner).append(created, file.created)
+                .append(isFolder, file.isFolder).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(id)
-                .append(name)
-                .append(path)
-                .append(size)
-                .append(owner)
-                .append(created)
-                .append(isFolder)
-                .toHashCode();
+        return new HashCodeBuilder(17, 37).append(id).append(name).append(path).append(size).append(owner)
+                .append(created).append(isFolder).toHashCode();
     }
 }

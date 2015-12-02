@@ -1,5 +1,3 @@
-* [files](api/files.md)
+* [Files](api/files.md)
 
-* [users](api/users.md)
-
-* [upload](api/upload.md)
+* [Users](api/users.md)
