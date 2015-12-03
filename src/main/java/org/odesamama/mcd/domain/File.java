@@ -35,6 +35,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
         @NamedQuery(name = "File.getFilesListForGivenFolder", query = "from File where parent = :parent") })
 public class File {
 
+    public static final String DIR_MEDIA_TYPE = "dir";
+
     @Id
     @Column(name = "file_id")
     @SequenceGenerator(name = "files_seq_gen", sequenceName = "file_id_seq")
@@ -163,6 +165,9 @@ public class File {
     }
 
     public String getType() {
+        if(isFolder){
+            return DIR_MEDIA_TYPE;
+        }
         if (path != null && path.contains(".")) {
             return URLConnection.guessContentTypeFromName(path);
         }
