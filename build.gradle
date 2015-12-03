@@ -59,7 +59,7 @@ dependencies {
 }
 
 configurations {
-    compile.exclude group:"ch.qos.logback"
+    compile.exclude group: "org.slf4j", module: "slf4j-log4j12"
     provided.all*.exclude group: "javax.servlet"
 }
 
