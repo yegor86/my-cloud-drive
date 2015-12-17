@@ -19,9 +19,9 @@ See [Get SSH working on Vagrant/Windows/Git](https://gist.github.com/haf/2843680
     
     <code>$ VBoxManage list runningvms</code>
 
-    <code>$ VBoxManage controlvm <uuid> poweroff</code>
+    <code>$ VBoxManage controlvm [uuid] poweroff</code>
     
-    <code>$ VBoxManage unregistervm <uuid></code>
+    <code>$ VBoxManage unregistervm [uuid]</code>
     
 ### Stop a virtualbox machine in the GURU_MEDITATION error state
 * Get VM list
@@ -29,4 +29,4 @@ See [Get SSH working on Vagrant/Windows/Git](https://gist.github.com/haf/2843680
     <code>$ VBoxManage list vms</code>    
 * Power off VM
     
-    <code>$ VBoxManage controlvm <uuid> poweroff</code>
+    <code>$ VBoxManage controlvm [uuid] poweroff</code>
