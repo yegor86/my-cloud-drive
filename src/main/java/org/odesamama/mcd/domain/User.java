@@ -111,6 +111,7 @@ public class User {
     }
 
     @Transient
+    @JsonIgnore
     public boolean isNew() {
         return userId == null;
     }

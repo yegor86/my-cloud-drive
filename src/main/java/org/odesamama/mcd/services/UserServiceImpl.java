@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
             throw new EmailTakenException();
         }
 
-        String userUid = user.getUserEmail().replace('@', '_');
+        String userUid = user.getUserEmail().replaceAll("[^A-Za-z0-9_]", "_");
         user.setUserUid(userUid);
 
         User savedUser = userRepository.save(user);

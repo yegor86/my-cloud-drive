@@ -68,7 +68,6 @@ public class File {
     private String extension;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonBackReference
     @JoinColumn(name = "parent_file_id")
     private File parent;
 
@@ -165,10 +164,12 @@ public class File {
     public String getType() {
         if (isFolder) {
             return "dir";
-        } else {
-            String contentType = URLConnection.guessContentTypeFromName(path);
-            return contentType != null ? contentType.split("/")[0] : "";
         }
+        if (path == null) {
+            return "";
+        }
+        String contentType = URLConnection.guessContentTypeFromName(path);
+        return contentType != null ? contentType.split("/")[0] : "";
     }
 
     @Override
