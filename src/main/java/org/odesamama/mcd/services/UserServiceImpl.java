@@ -41,11 +41,8 @@ public class UserServiceImpl implements UserService {
             throw new EmailTakenException();
         }
 
-        String userUid = user.getUserEmail().replace('@', '_');
-        user.setUserUid(userUid);
-
         User savedUser = userRepository.save(user);
-        tenantManager.create(user.getUserUid());
+        tenantManager.create(user.getUserEmail());
         fileService.createHomeDirectoryForUser(savedUser);
         return savedUser;
     }

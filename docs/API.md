@@ -1,3 +1,3 @@
-* [Files](api/files.md)
+* [Files](api/Files.md)
 
-* [Users](api/users.md)
+* [Users](api/Users.md)
