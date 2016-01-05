@@ -108,3 +108,37 @@ task migrateAll << {
         shell.run(file('groovy/MigrateTools.groovy'), "$row.nspname")
     }
 }
+
+
+
+sourceSets {
+    unitTest {
+        java.srcDir file('src/test/java/org/odesamama/mcd/repositories')
+        resources.srcDir file('src/test/resources')
+    }
+}
+
+test {
+    useJUnit()
+    println('Check task is executed')
+
+    //set travis config file
+    systemProperty "spring.profiles.active", "travis"
+
+    exclude 'org/odesamama/mcd/controllers/**'
+    include 'org/odesamama/mcd/service/**'
+    exclude 'org/odesamama/mcd/multitenancy/**'
+    include 'org/odesamama/mcd/repositories/**'
+
+
+    // listen to events in the test execution lifecycle
+    beforeTest { descriptor ->
+        logger.lifecycle("Running test: " + descriptor)
+    }
+    //Enable for detailed output
+//    // listen to standard out and standard error of the test JVM(s)
+//    onOutput { descriptor, event ->
+//        logger.lifecycle("Test: " + descriptor + " produced standard out/err: " + event.message )
+//    }
+
+}

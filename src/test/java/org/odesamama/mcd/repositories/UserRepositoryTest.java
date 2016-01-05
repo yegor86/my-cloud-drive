@@ -6,8 +6,9 @@ import org.junit.runner.RunWith;
 import org.odesamama.mcd.Application;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by starnakin on 15.10.2015.
@@ -15,7 +16,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
-@WebAppConfiguration
+@Transactional
+@Rollback(true)
 public class UserRepositoryTest {
 
     @Autowired
