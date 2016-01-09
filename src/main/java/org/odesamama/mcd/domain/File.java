@@ -21,6 +21,7 @@ import javax.persistence.Transient;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.odesamama.mcd.domain.enums.Permissions;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -67,6 +68,9 @@ public class File {
 
     @Column(name = "extension")
     private String extension;
+
+    @Column(name = "permissions")
+    private int permissions;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_file_id")
@@ -157,6 +161,14 @@ public class File {
 
     public Date getUpdated() {
         return updated;
+    }
+
+    public Permissions getPermissions() {
+        return Permissions.valueOf(permissions);
+    }
+
+    public void setPermissions(Permissions permissions) {
+        this.permissions = permissions.getCode();
     }
 
     public Boolean isFolder() {

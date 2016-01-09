@@ -13,7 +13,7 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.odesamama.mcd.domain.File;
 import org.odesamama.mcd.domain.FileBuilder;
-import org.odesamama.mcd.domain.FilesUsersRights;
+import org.odesamama.mcd.domain.UsersGroups;
 import org.odesamama.mcd.domain.User;
 import org.odesamama.mcd.domain.enums.Permissions;
 import org.odesamama.mcd.exeptions.ResourceAlreadyExistsException;
@@ -46,7 +46,7 @@ public class FileServiceImpl implements FileService {
     @Autowired
     private Configuration conf;
 
-    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Value("${hdfs.namenode.url}")
     private String nameNodeUrl;
@@ -65,8 +65,7 @@ public class FileServiceImpl implements FileService {
             throw new ResourceAlreadyExistsException();
         }
 
-        File file = saveFileMetadata(user, filePath, bytes.length, false);
-        saveUserRights(file, user, Permissions.READ_MODIFY);
+        saveFileMetadata(user, filePath, bytes.length, false);
 
         Path path = new Path(String.format("%s/%s/%s", nameNodeUrl, email, filePath));
         saveFileToHDFS(path, conf, bytes);
@@ -84,8 +83,7 @@ public class FileServiceImpl implements FileService {
             throw new ResourceAlreadyExistsException();
         }
 
-        File file = saveFileMetadata(user, relativePath, 0, true);
-        saveUserRights(file, user, Permissions.READ_MODIFY);
+        saveFileMetadata(user, relativePath, 0, true);
 
         Path hdfsPath = new Path(String.format("%s/%s/%s", nameNodeUrl, email, relativePath));
         mkDirsHDFS(hdfsPath, conf);
@@ -102,7 +100,7 @@ public class FileServiceImpl implements FileService {
             throws URISyntaxException, IOException {
         try (FileSystem fileSystem = FileSystem.get(new URI(nameNodeUrl), conf)) {
 
-            OutputStream os = fileSystem.create(filePath, () -> LOGGER.debug("File loaded {}", filePath.getName()));
+            OutputStream os = fileSystem.create(filePath, () -> logger.debug("File loaded {}", filePath.getName()));
             try (BufferedOutputStream bw = new BufferedOutputStream(os)) {
                 bw.write(bytes);
             }
@@ -123,8 +121,10 @@ public class FileServiceImpl implements FileService {
 
         File parent = fileRepository.getFileInfoByFilePathAndEmail(user.getUserEmail(), parentPath);
 
+        // Inherit parent's permissions
         File file = new FileBuilder().owner(user).name(fileName).path(filePath).parent(parent).size(fileSize)
-                .isFolder(isFolder).extension(FilenameUtils.getExtension(fileName)).build();
+                .isFolder(isFolder).extension(FilenameUtils.getExtension(fileName)).permissions(parent.getPermissions())
+                .build();
         return fileRepository.save(file);
     }
 
@@ -139,7 +139,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public void saveUserRights(File file, User user, Permissions permissions) {
-        FilesUsersRights rights = new FilesUsersRights(file, user, Permissions.READ_MODIFY);
+        UsersGroups rights = new UsersGroups(file, user, Permissions.USER_READ);
         rightsRepository.save(rights);
     }
 

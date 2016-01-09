@@ -11,6 +11,7 @@ import org.odesamama.mcd.domain.File;
 import org.odesamama.mcd.exeptions.NoSuchResourceException;
 import org.odesamama.mcd.repositories.FileRepository;
 import org.odesamama.mcd.services.FileService;
+import org.odesamama.mcd.services.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -36,7 +37,10 @@ import org.springframework.web.servlet.HandlerMapping;
 public class FileController {
 
     @Autowired
-    FileService fileService;
+    private FileService fileService;
+
+    @Autowired
+    private GroupService groupService;
 
     @Autowired
     private FileRepository fileRepository;
@@ -59,6 +63,8 @@ public class FileController {
             throws IOException, URISyntaxException {
 
         fileService.createFolder(path, email);
+        groupService.createGroup(email);
+
         return HttpStatus.OK;
     }
 

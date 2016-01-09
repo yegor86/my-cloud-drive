@@ -1,5 +1,7 @@
 package org.odesamama.mcd.domain;
 
+import org.odesamama.mcd.domain.enums.Permissions;
+
 public class FileBuilder {
 
     private User owner;
@@ -9,6 +11,7 @@ public class FileBuilder {
     private Integer size;
     private Boolean isFolder;
     private String extension;
+    private Permissions permissions;
 
     public FileBuilder owner(User owner) {
         this.owner = owner;
@@ -45,6 +48,11 @@ public class FileBuilder {
         return this;
     }
 
+    public FileBuilder permissions(Permissions permissions) {
+        this.permissions = permissions;
+        return this;
+    }
+
     public File build() {
         File file = new File();
         file.setOwner(owner);
@@ -54,6 +62,7 @@ public class FileBuilder {
         file.setSize(size);
         file.setFolder(isFolder);
         file.setExtension(extension);
+        file.setPermissions(permissions);
         return file;
     }
 
