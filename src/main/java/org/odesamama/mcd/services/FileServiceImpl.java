@@ -11,15 +11,16 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.odesamama.mcd.domain.Acl;
+import org.odesamama.mcd.domain.AclBuilder;
 import org.odesamama.mcd.domain.File;
 import org.odesamama.mcd.domain.FileBuilder;
-import org.odesamama.mcd.domain.UsersGroups;
 import org.odesamama.mcd.domain.User;
 import org.odesamama.mcd.domain.enums.Permissions;
 import org.odesamama.mcd.exeptions.ResourceAlreadyExistsException;
 import org.odesamama.mcd.exeptions.UserNotExistsException;
+import org.odesamama.mcd.repositories.AclRepository;
 import org.odesamama.mcd.repositories.FileRepository;
-import org.odesamama.mcd.repositories.FileUserRightsRepository;
 import org.odesamama.mcd.repositories.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +42,7 @@ public class FileServiceImpl implements FileService {
     private FileRepository fileRepository;
 
     @Autowired
-    private FileUserRightsRepository rightsRepository;
+    private AclRepository aclRepository;
 
     @Autowired
     private Configuration conf;
@@ -65,7 +66,8 @@ public class FileServiceImpl implements FileService {
             throw new ResourceAlreadyExistsException();
         }
 
-        saveFileMetadata(user, filePath, bytes.length, false);
+        File file = saveFileMetadata(user, filePath, bytes.length, false);
+        // saveUserRights(file, user, Permissions.USER_WRITE);
 
         Path path = new Path(String.format("%s/%s/%s", nameNodeUrl, email, filePath));
         saveFileToHDFS(path, conf, bytes);
@@ -83,7 +85,8 @@ public class FileServiceImpl implements FileService {
             throw new ResourceAlreadyExistsException();
         }
 
-        saveFileMetadata(user, relativePath, 0, true);
+        File file = saveFileMetadata(user, relativePath, 0, true);
+        // saveUserRights(file, user, Permissions.USER_WRITE);
 
         Path hdfsPath = new Path(String.format("%s/%s/%s", nameNodeUrl, email, relativePath));
         mkDirsHDFS(hdfsPath, conf);
@@ -123,8 +126,7 @@ public class FileServiceImpl implements FileService {
 
         // Inherit parent's permissions
         File file = new FileBuilder().owner(user).name(fileName).path(filePath).parent(parent).size(fileSize)
-                .isFolder(isFolder).extension(FilenameUtils.getExtension(fileName)).permissions(parent.getPermissions())
-                .build();
+                .isFolder(isFolder).extension(FilenameUtils.getExtension(fileName)).build();
         return fileRepository.save(file);
     }
 
@@ -139,8 +141,8 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public void saveUserRights(File file, User user, Permissions permissions) {
-        UsersGroups rights = new UsersGroups(file, user, Permissions.USER_READ);
-        rightsRepository.save(rights);
+        Acl acl = new AclBuilder().user(user).permissions(permissions).build();
+        aclRepository.save(acl);
     }
 
     @Override

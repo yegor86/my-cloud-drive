@@ -8,15 +8,15 @@ begin
 	    select 
             u.user_email
         from 
-            "public".users_groups ug
-            join "public".users u on u.user_id = ug.user_id
+            public.acl
+            join public.users u on u.user_id = acl.user_id
         where 
-            ug.user_id != userId 
-            and ug.group_id in (
+            acl.user_id != userId 
+            and acl.group_id in (
               select 
                    group_id
               from 
-                   "public".users_groups
+                   public.acl
               where 
                    user_id = userId
             ) 

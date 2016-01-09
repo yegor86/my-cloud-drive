@@ -34,8 +34,8 @@ public class Group {
     private String groupName;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "owner_id")
+    private User owner;
 
     public Long getGroupId() {
         return groupId;
@@ -53,12 +53,12 @@ public class Group {
         this.groupName = groupName;
     }
 
-    public User getUser() {
-        return user;
+    public User getOwner() {
+        return owner;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 
     @Override
@@ -72,12 +72,12 @@ public class Group {
         Group group = (Group) o;
 
         return new EqualsBuilder().append(groupId, group.groupId).append(groupName, group.groupName)
-                .append(user, group.user).isEquals();
+                .append(owner, group.owner).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(groupId).append(groupName).append(user).toHashCode();
+        return new HashCodeBuilder(17, 37).append(groupId).append(groupName).append(owner).toHashCode();
     }
 
 }

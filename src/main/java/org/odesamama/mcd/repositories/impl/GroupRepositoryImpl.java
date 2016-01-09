@@ -1,4 +1,4 @@
-package org.odesamama.mcd.repositories;
+package org.odesamama.mcd.repositories.impl;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -6,6 +6,7 @@ import javax.persistence.TypedQuery;
 
 import org.odesamama.mcd.domain.Group;
 import org.odesamama.mcd.domain.User;
+import org.odesamama.mcd.repositories.CustomGroupRepository;
 
 public class GroupRepositoryImpl implements CustomGroupRepository {
 
