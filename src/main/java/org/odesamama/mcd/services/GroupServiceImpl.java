@@ -24,16 +24,18 @@ public class GroupServiceImpl implements GroupService {
     private AclRepository aclRepository;
 
     @Override
-    public void createGroup(String email) {
+    public void createGroupByEmail(String email) {
         User user = userRepository.findByEmail(email);
+        createGroupByUser(user);
+    }
+
+    @Override
+    public void createGroupByUser(User user) {
 
         Group group = new Group();
         group.setOwner(user);
-        group.setGroupName(email);
+        group.setGroupName(user.getUserEmail());
         groupRepository.save(group);
-
-        Acl acl = new AclBuilder().user(user).group(group).permissions(Permissions.USER_WRITE).build();
-        aclRepository.save(acl);
     }
 
     @Override

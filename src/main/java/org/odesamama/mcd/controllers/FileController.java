@@ -63,7 +63,6 @@ public class FileController {
             throws IOException, URISyntaxException {
 
         fileService.createFolder(path, email);
-        groupService.createGroup(email);
 
         return HttpStatus.OK;
     }

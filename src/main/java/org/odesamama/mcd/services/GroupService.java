@@ -6,7 +6,9 @@ import org.odesamama.mcd.domain.enums.Permissions;
 
 public interface GroupService {
 
-    void createGroup(String email);
+    void createGroupByEmail(String email);
+
+    void createGroupByUser(User user);
 
     void addUserToGroup(User user, Group group, Permissions perms);
 
