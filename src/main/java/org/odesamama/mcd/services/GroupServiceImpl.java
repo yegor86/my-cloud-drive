@@ -2,6 +2,7 @@ package org.odesamama.mcd.services;
 
 import org.odesamama.mcd.domain.Acl;
 import org.odesamama.mcd.domain.AclBuilder;
+import org.odesamama.mcd.domain.File;
 import org.odesamama.mcd.domain.Group;
 import org.odesamama.mcd.domain.User;
 import org.odesamama.mcd.domain.enums.Permissions;
@@ -24,18 +25,36 @@ public class GroupServiceImpl implements GroupService {
     private AclRepository aclRepository;
 
     @Override
-    public void createGroupByEmail(String email) {
+    public Group getOrCreateGroup(String email) {
         User user = userRepository.findByEmail(email);
-        createGroupByUser(user);
+        return getOrCreateGroup(user);
     }
 
     @Override
-    public void createGroupByUser(User user) {
+    public Group getOrCreateGroup(User user) {
 
-        Group group = new Group();
+        long lastGid = groupRepository.getLastGroupIdByUser(user);
+        Group group = groupRepository.findByName(user.getUserEmail() + "_" + lastGid);
+        if (group != null) {
+            return group;
+        }
+
+        group = new Group();
         group.setOwner(user);
-        group.setGroupName(user.getUserEmail());
-        groupRepository.save(group);
+        group.setGroupName(user.getUserEmail() + "_" + lastGid);
+        return groupRepository.save(group);
+    }
+
+    @Override
+    public Group getOrCreateGroup(File file) {
+        Group group = groupRepository.findByName(file.getOwner().getUserEmail() + "_" + file.getFileUid());
+        if (group != null) {
+            return group;
+        }
+        group = new Group();
+        group.setOwner(file.getOwner());
+        group.setGroupName(file.getOwner().getUserEmail() + "_" + file.getFileUid());
+        return groupRepository.save(group);
     }
 
     @Override

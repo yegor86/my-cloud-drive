@@ -8,8 +8,13 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.odesamama.mcd.domain.File;
+import org.odesamama.mcd.domain.Group;
+import org.odesamama.mcd.domain.User;
+import org.odesamama.mcd.domain.enums.Permissions;
 import org.odesamama.mcd.exeptions.NoSuchResourceException;
+import org.odesamama.mcd.exeptions.UserNotExistsException;
 import org.odesamama.mcd.repositories.FileRepository;
+import org.odesamama.mcd.repositories.UserRepository;
 import org.odesamama.mcd.services.FileService;
 import org.odesamama.mcd.services.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +50,9 @@ public class FileController {
     @Autowired
     private FileRepository fileRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public @ResponseBody HttpStatus uploadFile(@RequestParam("filePath") String filePath,
             @RequestParam("file") MultipartFile file, @RequestParam("email") String email)
@@ -65,6 +73,26 @@ public class FileController {
         fileService.createFolder(path, email);
 
         return HttpStatus.OK;
+    }
+
+    @RequestMapping(value = "/sharefolder", method = RequestMethod.POST)
+    public void shareFolder(@RequestParam("path") String filePath, @RequestParam("ownerUid") String ownerUid,
+            @RequestParam("userUid") String userUid, @RequestParam("permissions") String permissions) {
+        validateFolder(ownerUid, filePath);
+
+        User user = userRepository.findByEmail(userUid);
+        if (user == null) {
+            throw new UserNotExistsException("User: " + userUid);
+        }
+
+        File file = fileRepository.getFileInfoByFilePathAndEmail(ownerUid, filePath);
+        if (file == null) {
+            throw new NoSuchResourceException("File:" + filePath + ", Owner: " + ownerUid);
+        }
+
+        Group group = groupService.getOrCreateGroup(file);
+        groupService.addUserToGroup(user, group, Permissions.valueOf(permissions));
+        fileService.updateFileGroup(file, group);
     }
 
     @RequestMapping(value = "/download/{email:.+}/**", method = RequestMethod.GET)
@@ -95,7 +123,7 @@ public class FileController {
     }
 
     @RequestMapping(value = "/list/{email:.+}/**", method = RequestMethod.GET)
-    private Iterable<File> getFileListForGivenPath(@PathVariable String email, HttpServletRequest request) {
+    public Iterable<File> getFileListForGivenPath(@PathVariable String email, HttpServletRequest request) {
         String filePath = exctractPathFromRequest(request, email);
         validateFolder(email, filePath);
 

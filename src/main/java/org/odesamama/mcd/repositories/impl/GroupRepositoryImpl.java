@@ -19,4 +19,11 @@ public class GroupRepositoryImpl implements CustomGroupRepository {
         q.setParameter("user", user);
         return !q.getResultList().isEmpty() ? q.getResultList().get(0).getGroupId() : 0;
     }
+
+    @Override
+    public Group findByName(String groupName) {
+        TypedQuery<Group> q = entityManager.createQuery("from Group g where g.groupName = :groupName", Group.class);
+        q.setParameter("groupName", groupName);
+        return !q.getResultList().isEmpty() ? q.getResultList().get(0) : null;
+    }
 }

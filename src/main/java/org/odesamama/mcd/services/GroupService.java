@@ -1,14 +1,17 @@
 package org.odesamama.mcd.services;
 
+import org.odesamama.mcd.domain.File;
 import org.odesamama.mcd.domain.Group;
 import org.odesamama.mcd.domain.User;
 import org.odesamama.mcd.domain.enums.Permissions;
 
 public interface GroupService {
 
-    void createGroupByEmail(String email);
+    Group getOrCreateGroup(File file);
 
-    void createGroupByUser(User user);
+    Group getOrCreateGroup(String email);
+
+    Group getOrCreateGroup(User user);
 
     void addUserToGroup(User user, Group group, Permissions perms);
 

@@ -21,6 +21,7 @@ import javax.persistence.Transient;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -50,6 +51,7 @@ public class User {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
+    @JsonBackReference
     private Group group;
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)

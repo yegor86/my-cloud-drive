@@ -42,6 +42,9 @@ public class File {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "files_seq_gen")
     private Long id;
 
+    @Column(name = "file_uid")
+    private String fileUid;
+
     @Column(name = "file_name")
     private String name;
 
@@ -55,6 +58,11 @@ public class File {
     @JoinColumn(name = "owner_id")
     @JsonBackReference
     private User owner;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "group_id")
+    @JsonBackReference
+    private Group group;
 
     @Column(name = "create_date")
     private Date created;
@@ -115,6 +123,14 @@ public class File {
         this.id = id;
     }
 
+    public String getFileUid() {
+        return fileUid;
+    }
+
+    public void setFileUid(String fileUid) {
+        this.fileUid = fileUid;
+    }
+
     public String getName() {
         return name;
     }
@@ -149,6 +165,14 @@ public class File {
 
     public void setOwner(User owner) {
         this.owner = owner;
+    }
+
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
     }
 
     public Date getCreated() {

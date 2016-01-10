@@ -15,6 +15,7 @@ import org.odesamama.mcd.domain.Acl;
 import org.odesamama.mcd.domain.AclBuilder;
 import org.odesamama.mcd.domain.File;
 import org.odesamama.mcd.domain.FileBuilder;
+import org.odesamama.mcd.domain.Group;
 import org.odesamama.mcd.domain.User;
 import org.odesamama.mcd.domain.enums.Permissions;
 import org.odesamama.mcd.exeptions.ResourceAlreadyExistsException;
@@ -125,8 +126,8 @@ public class FileServiceImpl implements FileService {
         File parent = fileRepository.getFileInfoByFilePathAndEmail(user.getUserEmail(), parentPath);
 
         // Inherit parent's permissions
-        File file = new FileBuilder().owner(user).name(fileName).path(filePath).parent(parent).size(fileSize)
-                .isFolder(isFolder).extension(FilenameUtils.getExtension(fileName)).build();
+        File file = new FileBuilder().owner(user).group(user.getGroup()).name(fileName).path(filePath).parent(parent)
+                .size(fileSize).isFolder(isFolder).extension(FilenameUtils.getExtension(fileName)).build();
         return fileRepository.save(file);
     }
 
@@ -157,6 +158,12 @@ public class FileServiceImpl implements FileService {
 
         FileSystem fileSystem = FileSystem.get(new URI(nameNodeUrl), conf);
         return fileSystem.open(path);
+    }
+
+    @Override
+    public void updateFileGroup(File file, Group group) {
+        file.setGroup(group);
+        fileRepository.save(file);
     }
 
 }

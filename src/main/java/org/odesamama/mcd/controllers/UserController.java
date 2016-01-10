@@ -57,7 +57,7 @@ public class UserController {
     @RequestMapping(value = "/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> createUser(@RequestBody User user) throws IOException, URISyntaxException {
         User created = userService.createUser(user);
-        groupService.createGroupByUser(user);
+        groupService.getOrCreateGroup(user);
         return new ResponseEntity<User>(created, HttpStatus.OK);
     }
 
