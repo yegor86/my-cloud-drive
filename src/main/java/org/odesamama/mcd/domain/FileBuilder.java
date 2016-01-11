@@ -1,8 +1,12 @@
 package org.odesamama.mcd.domain;
 
+import java.util.UUID;
+
 public class FileBuilder {
 
+    private String fileUid = UUID.randomUUID().toString();;
     private User owner;
+    private Group group;
     private String name;
     private String path;
     private File parent;
@@ -10,8 +14,18 @@ public class FileBuilder {
     private Boolean isFolder;
     private String extension;
 
+    public FileBuilder fileUid(String fileUid) {
+        this.fileUid = fileUid;
+        return this;
+    }
+
     public FileBuilder owner(User owner) {
         this.owner = owner;
+        return this;
+    }
+
+    public FileBuilder group(Group group) {
+        this.group = group;
         return this;
     }
 
@@ -47,6 +61,7 @@ public class FileBuilder {
 
     public File build() {
         File file = new File();
+        file.setFileUid(fileUid);
         file.setOwner(owner);
         file.setName(name);
         file.setPath(path);
@@ -54,6 +69,7 @@ public class FileBuilder {
         file.setSize(size);
         file.setFolder(isFolder);
         file.setExtension(extension);
+        file.setGroup(group);
         return file;
     }
 

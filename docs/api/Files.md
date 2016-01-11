@@ -14,6 +14,16 @@ $ curl -i -X POST \
   http://localhost:3030/files/createfolder
 ```
 
+#### /files/sharefolder
+```bash
+$ curl -i -X POST \
+  -F "path=/dir0/dir02" \
+  -F "ownerUid=admin@mail.com" \
+  -F "userUid=yegor@mail.com" \
+  -F "permissions=GROUP_WRITE" \
+  http://localhost:3030/files/sharefolder
+```
+
 #### /files/upload
 ```bash
 $ curl -i -X POST \

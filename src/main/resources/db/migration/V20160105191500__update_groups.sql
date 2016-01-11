@@ -1,0 +1,1 @@
+alter table groups rename "description" to "group_name";

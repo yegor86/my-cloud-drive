@@ -29,9 +29,9 @@ public class Group {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "groups_seq_gen")
     private Long groupId;
 
-    @Column(name = "description")
+    @Column(name = "group_name")
     @Size(max = 254)
-    private String description;
+    private String groupName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
@@ -45,12 +45,12 @@ public class Group {
         this.groupId = groupId;
     }
 
-    public String getDescription() {
-        return description;
+    public String getGroupName() {
+        return groupName;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
 
     public User getOwner() {
@@ -71,13 +71,13 @@ public class Group {
 
         Group group = (Group) o;
 
-        return new EqualsBuilder().append(groupId, group.groupId).append(description, group.description)
+        return new EqualsBuilder().append(groupId, group.groupId).append(groupName, group.groupName)
                 .append(owner, group.owner).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(groupId).append(description).append(owner).toHashCode();
+        return new HashCodeBuilder(17, 37).append(groupId).append(groupName).append(owner).toHashCode();
     }
 
 }

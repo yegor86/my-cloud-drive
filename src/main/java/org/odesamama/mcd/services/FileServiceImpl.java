@@ -11,15 +11,17 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.odesamama.mcd.domain.Acl;
+import org.odesamama.mcd.domain.AclBuilder;
 import org.odesamama.mcd.domain.File;
 import org.odesamama.mcd.domain.FileBuilder;
-import org.odesamama.mcd.domain.FilesUsersRights;
+import org.odesamama.mcd.domain.Group;
 import org.odesamama.mcd.domain.User;
 import org.odesamama.mcd.domain.enums.Permissions;
 import org.odesamama.mcd.exeptions.ResourceAlreadyExistsException;
 import org.odesamama.mcd.exeptions.UserNotExistsException;
+import org.odesamama.mcd.repositories.AclRepository;
 import org.odesamama.mcd.repositories.FileRepository;
-import org.odesamama.mcd.repositories.FileUserRightsRepository;
 import org.odesamama.mcd.repositories.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,12 +43,12 @@ public class FileServiceImpl implements FileService {
     private FileRepository fileRepository;
 
     @Autowired
-    private FileUserRightsRepository rightsRepository;
+    private AclRepository aclRepository;
 
     @Autowired
     private Configuration conf;
 
-    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Value("${hdfs.namenode.url}")
     private String nameNodeUrl;
@@ -66,7 +68,7 @@ public class FileServiceImpl implements FileService {
         }
 
         File file = saveFileMetadata(user, filePath, bytes.length, false);
-        saveUserRights(file, user, Permissions.READ_MODIFY);
+        // saveUserRights(file, user, Permissions.USER_WRITE);
 
         Path path = new Path(String.format("%s/%s/%s", nameNodeUrl, email, filePath));
         saveFileToHDFS(path, conf, bytes);
@@ -85,7 +87,7 @@ public class FileServiceImpl implements FileService {
         }
 
         File file = saveFileMetadata(user, relativePath, 0, true);
-        saveUserRights(file, user, Permissions.READ_MODIFY);
+        // saveUserRights(file, user, Permissions.USER_WRITE);
 
         Path hdfsPath = new Path(String.format("%s/%s/%s", nameNodeUrl, email, relativePath));
         mkDirsHDFS(hdfsPath, conf);
@@ -102,7 +104,7 @@ public class FileServiceImpl implements FileService {
             throws URISyntaxException, IOException {
         try (FileSystem fileSystem = FileSystem.get(new URI(nameNodeUrl), conf)) {
 
-            OutputStream os = fileSystem.create(filePath, () -> LOGGER.debug("File loaded {}", filePath.getName()));
+            OutputStream os = fileSystem.create(filePath, () -> logger.debug("File loaded {}", filePath.getName()));
             try (BufferedOutputStream bw = new BufferedOutputStream(os)) {
                 bw.write(bytes);
             }
@@ -123,8 +125,9 @@ public class FileServiceImpl implements FileService {
 
         File parent = fileRepository.getFileInfoByFilePathAndEmail(user.getUserEmail(), parentPath);
 
-        File file = new FileBuilder().owner(user).name(fileName).path(filePath).parent(parent).size(fileSize)
-                .isFolder(isFolder).extension(FilenameUtils.getExtension(fileName)).build();
+        // Inherit parent's permissions
+        File file = new FileBuilder().owner(user).group(user.getGroup()).name(fileName).path(filePath).parent(parent)
+                .size(fileSize).isFolder(isFolder).extension(FilenameUtils.getExtension(fileName)).build();
         return fileRepository.save(file);
     }
 
@@ -139,8 +142,8 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public void saveUserRights(File file, User user, Permissions permissions) {
-        FilesUsersRights rights = new FilesUsersRights(file, user, Permissions.READ_MODIFY);
-        rightsRepository.save(rights);
+        Acl acl = new AclBuilder().user(user).permissions(permissions).build();
+        aclRepository.save(acl);
     }
 
     @Override
@@ -155,6 +158,12 @@ public class FileServiceImpl implements FileService {
 
         FileSystem fileSystem = FileSystem.get(new URI(nameNodeUrl), conf);
         return fileSystem.open(path);
+    }
+
+    @Override
+    public void updateFileGroup(File file, Group group) {
+        file.setGroup(group);
+        fileRepository.save(file);
     }
 
 }
