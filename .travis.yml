@@ -8,4 +8,4 @@ install:
   - sudo dpkg -i vagrant_1.8.1_x86_64.deb
   - sudo vagrant plugin install vagrant-plugin-bundler
 script:
-  -sudo vagrant up
+  - sudo vagrant up db master
