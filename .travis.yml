@@ -1,3 +1,4 @@
+language: java
 install:
   - sudo apt-get update -q
   - sudo apt-get install -q virtualbox --fix-missing
