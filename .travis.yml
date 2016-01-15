@@ -9,8 +9,8 @@ env:
 services:
   - postgresql
 before_script:
-  - psql -c 'CREATE USER '$APP_DB_USER' WITH PASSWORD '$APP_DB_PASS';' -U postgres
-  - psql -c 'CREATE DATABASE '$APP_DB_NAME' WITH OWNER='$APP_DB_USER'
+  - psql -c 'CREATE USER $APP_DB_USER WITH PASSWORD $APP_DB_PASS;' -U postgres
+  - psql -c 'CREATE DATABASE $APP_DB_NAME WITH OWNER=$APP_DB_USER
                                                LC_COLLATE='en_US.utf8'
                                                LC_CTYPE='en_US.utf8'
                                                ENCODING='UTF8'
