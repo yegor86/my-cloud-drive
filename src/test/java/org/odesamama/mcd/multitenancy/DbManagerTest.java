@@ -10,7 +10,7 @@ public class DbManagerTest {
     @Test
     public void testMigrate() throws CompilationFailedException, IOException {
         TenantManager dbManager = new TenantManager();
-        dbManager.create("yfadeev");
+        dbManager.create("yegor2@mail.com");
     }
 
 }

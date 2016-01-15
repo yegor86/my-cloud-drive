@@ -144,7 +144,7 @@ public class FileController {
             File file = fileRepository.getFileInfoByFilePathAndEmail(email, filePath);
 
             if (file == null || !file.isFolder()) {
-                throw new NoSuchResourceException();
+                throw new NoSuchResourceException("Resource was not found");
             }
         }
     }

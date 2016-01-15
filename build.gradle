@@ -94,6 +94,43 @@ configurations.driver.each {File file ->
     loader.addURL(file.toURL())
 }
 
+// $ gradle -Pfirstname=FTest -Plastname=LTest -Pemail=admin2@mail.com register
+task register << {
+    groovy.sql.Sql sql = groovy.sql.Sql.newInstance(
+        "jdbc:postgresql://localhost:5432/mydrive",
+        "mydrive",
+        "mydrive",
+        "org.postgresql.Driver"
+    )
+    sql.getConnection().setAutoCommit(false)
+    
+    try {
+	    def uuid = java.util.UUID.randomUUID().toString()
+	    def now = new Date()
+	    def timestamp = now.toTimestamp()
+	    def query = """insert into public.users (user_uid, user_name, user_email, create_date, update_date, last_name, group_id)
+	          |values ('"$uuid"', '"$firstname"', '"$email"', '"$timestamp"', '"$timestamp"', '"$lastname"', 0)
+	          |""".stripMargin()    
+	    sql.execute(query)
+	    
+	    query = """insert into public.groups (owner_id, group_name)
+	          |values (
+	          |(select user_id from public.users where user_email = '"$email"'),
+	          |'$email'
+	          |)""".stripMargin()    
+	    sql.execute(query)
+	    sql.commit()
+    } catch(Throwable t) {
+        sql.rollback()
+        throw t
+    } finally {
+        sql.close()
+    }
+    def shell = new GroovyShell(buildscript.classLoader)
+    shell.run(file('groovy/MigrateTools.groovy'), email)
+	    
+}
+
 task migrateAll << {
     groovy.sql.Sql sql = groovy.sql.Sql.newInstance(
         "jdbc:postgresql://localhost:5432/mydrive",
@@ -102,7 +139,7 @@ task migrateAll << {
         "org.postgresql.Driver"
     )
     
-    def shell = new GroovyShell(buildscript.classLoader);
+    def shell = new GroovyShell(buildscript.classLoader)
     sql.eachRow("select nspname from pg_namespace where nspname !~ '^pg_.*' and nspname != 'information_schema'") { row ->
         println "Update schema: $row.nspname"
         shell.run(file('groovy/MigrateTools.groovy'), "$row.nspname")

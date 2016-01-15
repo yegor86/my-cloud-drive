@@ -124,9 +124,10 @@ public class FileServiceImpl implements FileService {
         parentPath = parentPath.isEmpty() ? "/" : parentPath;
 
         File parent = fileRepository.getFileInfoByFilePathAndEmail(user.getUserEmail(), parentPath);
+        validateAccess(user, parent.getGroup());
 
-        // Inherit parent's permissions
-        File file = new FileBuilder().owner(user).group(user.getGroup()).name(fileName).path(filePath).parent(parent)
+        // Inherit parent's group
+        File file = new FileBuilder().owner(user).group(parent.getGroup()).name(fileName).path(filePath).parent(parent)
                 .size(fileSize).isFolder(isFolder).extension(FilenameUtils.getExtension(fileName)).build();
         return fileRepository.save(file);
     }
@@ -166,4 +167,10 @@ public class FileServiceImpl implements FileService {
         fileRepository.save(file);
     }
 
+    void validateAccess(User user, Group group) {
+        if (aclRepository.findAclByUserAndGroup(user, group) == null) {
+            throw new SecurityException("User is not allowed to perform operation");
+        }
+
+    }
 }
