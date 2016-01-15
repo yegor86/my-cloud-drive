@@ -1,8 +1,13 @@
 language: java
+env:
+-PG_REPO_APT_SOURCE=/etc/apt/sources.list.d/pgdg.list
+-PG_CONF="/etc/postgresql/$PG_VERSION/main/postgresql.conf"
+-PG_HBA="/etc/postgresql/$PG_VERSION/main/pg_hba.conf"
+-PG_DIR="/var/lib/postgresql/$PG_VERSION/main"
 jdk:
   - oraclejdk8
 before_script:
--PG_REPO_APT_SOURCE=/etc/apt/sources.list.d/pgdg.list
+
 -if [ ! -f "$PG_REPO_APT_SOURCE" ]
 -then
   # Add PG apt repo:
@@ -17,10 +22,6 @@ before_script:
 -apt-get -y upgrade
 
 -apt-get -y install "postgresql-$PG_VERSION" "postgresql-contrib-$PG_VERSION"
-
--PG_CONF="/etc/postgresql/$PG_VERSION/main/postgresql.conf"
--PG_HBA="/etc/postgresql/$PG_VERSION/main/pg_hba.conf"
--PG_DIR="/var/lib/postgresql/$PG_VERSION/main"
 
 # Edit postgresql.conf to change listen address to '*':
 -sed -i "s/#listen_addresses = 'localhost'/listen_addresses = '*'/" "$PG_CONF"
