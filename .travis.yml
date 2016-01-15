@@ -7,25 +7,18 @@ env:
 jdk:
   - oraclejdk8
 before_script:
-
-  - sudo echo "deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main" > "$PG_REPO_APT_SOURCE"
+  - sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main" > "$PG_REPO_APT_SOURCE"'
     # Add PGDG repo key:
   - sudo  wget --quiet -O - https://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | apt-key add -
-
   # Update package list and upgrade all packages
   - sudo apt-get update
   - sudo apt-get -y upgrade
-
   - sudo apt-get -y install "postgresql-$PG_VERSION" "postgresql-contrib-$PG_VERSION"
-
   # Edit postgresql.conf to change listen address to '*':
   - sudo sed -i "s/#listen_addresses = 'localhost'/listen_addresses = '*'/" "$PG_CONF"
-
   # Append to pg_hba.conf to add password auth:
   - sudo echo "host    all             all             all                     md5" >> "$PG_HBA"
-
   # Explicitly set default client_encoding
   - sudo echo "client_encoding = utf8" >> "$PG_CONF"
-
   # Restart so that all new config is loaded:
   - sudo service postgresql restart
