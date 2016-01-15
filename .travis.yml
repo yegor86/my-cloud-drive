@@ -3,10 +3,6 @@ addons:
   postgresql: "9.4"
 jdk:
   - oraclejdk8
-env:
-  - APP_DB_USER=
-  - APP_DB_PASS=mydrive
-  - APP_DB_NAME=mydrive
 services:
   - postgresql
 before_script:
