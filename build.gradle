@@ -111,4 +111,9 @@ task migrateAll << {
 
 task check(overwrite: true) {
     println('Check task is executed')
+    test {
+        java {
+            srcDirs = ["src/test/java/org/odesamama/mcd/repositories"]
+        }
+    }
 }
