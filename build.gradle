@@ -118,19 +118,12 @@ sourceSets {
     }
 }
 
-//
-//task check(overwrite: true) {
-//    println('Check task is executed')
-//    test {
-//        java {
-//            srcDirs = ["src/test/java/org/odesamama/mcd/repositories"]
-//        }
-//    }
-//}
-
 test {
     useJUnit()
     println('Check task is executed')
+
+    //set travis config file
+    run { systemProperty "spring.profiles.active", "travis" }
 
     exclude 'org/odesamama/mcd/controllers/**'
     exclude 'org/odesamama/mcd/service/**'
