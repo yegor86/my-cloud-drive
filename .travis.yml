@@ -1,5 +1,5 @@
 install:
-  - sudo Vagrant-setup/bootstrap.sh
+  - bash Vagrant-setup/bootstrap.sh
 #language: java
 #addons:
 #  postgresql: "9.3"
