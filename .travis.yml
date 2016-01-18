@@ -7,7 +7,6 @@ jdk:
 services:
   - postgresql
 before_script:
-  - psql -c 'CREATE USER mydrive WITH PASSWORD 'mydrive';' -U postgres
-  - psql -c 'create database mydrive;' -U postgres
+  - sudo bash Vagrant-setup/bootstrap_travis.sh
 
 
