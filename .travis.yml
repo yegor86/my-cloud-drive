@@ -6,7 +6,7 @@ jdk:
   - oraclejdk8
 services:
   - postgresql
-before_script:
+before_install:
   - sudo bash Vagrant-setup/bootstrap_travis.sh
 
 
