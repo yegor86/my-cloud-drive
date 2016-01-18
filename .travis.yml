@@ -1,5 +1,5 @@
 language: java
-script:
+before_install:
   - sudo bash Vagrant-setup/bootstrap_travis.sh
 #language: java
 #addons:
