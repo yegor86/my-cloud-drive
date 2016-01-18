@@ -129,7 +129,7 @@ sourceSets {
 //}
 
 test {
-    useTestNG()
+    useJUnit()
     println('Check task is executed')
     exclude 'org/odesamama/mcd/controllers/**'
     exclude 'org/odesamama/mcd/service/**'
