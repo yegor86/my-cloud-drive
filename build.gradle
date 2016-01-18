@@ -108,3 +108,7 @@ task migrateAll << {
         shell.run(file('groovy/MigrateTools.groovy'), "$row.nspname")
     }
 }
+
+task check {
+    println('Check task is executed')
+}
