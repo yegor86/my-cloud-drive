@@ -109,11 +109,28 @@ task migrateAll << {
     }
 }
 
-task check(overwrite: true) {
-    println('Check task is executed')
-    test {
-        java {
-            srcDirs = ["src/test/java/org/odesamama/mcd/repositories"]
-        }
+
+
+sourceSets {
+    unitTest {
+        java.srcDir file('src/test/java/org/odesamama/mcd/repositories')
+        resources.srcDir file('src/test/resources')
     }
+}
+
+//
+//task check(overwrite: true) {
+//    println('Check task is executed')
+//    test {
+//        java {
+//            srcDirs = ["src/test/java/org/odesamama/mcd/repositories"]
+//        }
+//    }
+//}
+
+test {
+    useTestNG()
+
+    exclude 'org/odesamama/**'
+    include 'org/odesamama/mcd/repositories'
 }
