@@ -49,6 +49,10 @@ then
   exit
 fi
 
+## Update package list and upgrade all packages
+apt-get update
+apt-get -y upgrade
+
 PG_REPO_APT_SOURCE=/etc/apt/sources.list.d/pgdg.list
 if [ ! -f "$PG_REPO_APT_SOURCE" ]
 then
@@ -59,9 +63,6 @@ then
   wget --quiet -O - https://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | apt-key add -
 fi
 
-## Update package list and upgrade all packages
-apt-get update
-#apt-get -y upgrade
 #
 apt-get -y install "postgresql-$PG_VERSION" "postgresql-contrib-$PG_VERSION"
 #
