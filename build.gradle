@@ -130,7 +130,7 @@ sourceSets {
 
 test {
     useTestNG()
-
+    println('Check task is executed')
     exclude 'org/odesamama/**'
     include 'org/odesamama/mcd/repositories'
 }
