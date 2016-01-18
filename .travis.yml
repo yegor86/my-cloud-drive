@@ -1,6 +1,6 @@
 language: bash
 script:
-  - sudo bash Vagrant-setup/bootstrap.sh
+  - sudo bash Vagrant-setup/bootstrap_travis.sh
 #language: java
 #addons:
 #  postgresql: "9.3"
