@@ -109,6 +109,6 @@ task migrateAll << {
     }
 }
 
-task check {
+task check(overwrite: true) {
     println('Check task is executed')
 }
