@@ -131,18 +131,10 @@ sourceSets {
 test {
     useJUnit()
     println('Check task is executed')
+
     exclude 'org/odesamama/mcd/controllers/**'
     exclude 'org/odesamama/mcd/service/**'
     exclude 'org/odesamama/mcd/multitenancy/**'
-    include 'org/odesamama/mcd/repositories'
+    include 'org/odesamama/mcd/repositories/**'
 
-    // listen to events in the test execution lifecycle
-    beforeTest { descriptor ->
-        logger.lifecycle("Running test: " + descriptor)
-    }
-
-    // listen to standard out and standard error of the test JVM(s)
-    onOutput { descriptor, event ->
-        logger.lifecycle("Test: " + descriptor + " produced standard out/err: " + event.message )
-    }
 }
