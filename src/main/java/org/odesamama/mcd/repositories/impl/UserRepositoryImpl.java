@@ -1,8 +1,6 @@
 package org.odesamama.mcd.repositories.impl;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import java.util.List;
 
 import org.odesamama.mcd.domain.User;
 import org.odesamama.mcd.repositories.CustomUserRepository;
@@ -16,17 +14,24 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class UserRepositoryImpl implements CustomUserRepository {
 
-    @PersistenceContext
-    EntityManager entityManager;
-
     @Autowired
-    JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
     @Override
     public User findByEmail(String email) {
-        TypedQuery<User> q = entityManager.createQuery("select u from User u where u.userEmail = :email", User.class);
-        q.setParameter("email", email);
-        return !q.getResultList().isEmpty() ? q.getResultList().get(0) : null;
+        List<User> userList = jdbcTemplate.query("select * from public.users where user_email = ?",
+                new Object[] { email }, (rs, rowNum) -> {
+                    User user = new User();
+                    user.setUserId(rs.getLong("user_id"));
+                    user.setUserUid(rs.getString("user_uid"));
+                    user.setUserName(rs.getString("user_name"));
+                    user.setLastName(rs.getString("last_name"));
+                    user.setUserEmail(email);
+
+                    return user;
+                });
+
+        return !userList.isEmpty() ? userList.get(0) : null;
     }
 
     @Override
