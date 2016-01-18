@@ -1,14 +1,12 @@
 language: java
-before_install:
-  - sudo bash Vagrant-setup/bootstrap_travis.sh
-#language: java
-#addons:
-#  postgresql: "9.3"
-#jdk:
-#  - oraclejdk8
-#services:
-#  - postgresql
-#before_script:
-#  - psql -c 'create database mydrive;' -U postgres
+addons:
+  postgresql: "9.3"
+jdk:
+  - oraclejdk8
+services:
+  - postgresql
+before_script:
+  - psql -c 'CREATE USER mydrive WITH PASSWORD 'mydrive';' -U postgres
+  - psql -c 'create database mydrive;' -U postgres
 
 
