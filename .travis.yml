@@ -1,13 +1,12 @@
-language: bash
-#sudo: required
-#language: java
-#addons:
-#  postgresql: "9.3"
-#jdk:
-#  - oraclejdk8
-#services:
-#  - postgresql
-script:
-  - sudo bash Vagrant-setup/bootstrap_travis.sh
+sudo: required
+language: java
+addons:
+  postgresql: "9.3"
+jdk:
+  - oraclejdk8
+services:
+  - postgresql
+before_install:
+  - sudo bash Vagrant-setup/travis_create_db_users.sh
 
 
