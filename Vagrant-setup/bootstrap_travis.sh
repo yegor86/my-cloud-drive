@@ -78,6 +78,8 @@ echo "host    all             all             all                     md5" >> "$
 # Explicitly set default client_encoding
 echo "client_encoding = utf8" >> "$PG_CONF"
 
+/etc/init.d/postgresql stop
+
 # Restart so that all new config is loaded:
 service postgresql restart
 
