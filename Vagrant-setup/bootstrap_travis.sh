@@ -60,7 +60,7 @@ then
 fi
 
 ## Update package list and upgrade all packages
-#apt-get update
+apt-get update
 #apt-get -y upgrade
 #
 #apt-get -y install "postgresql-$PG_VERSION" "postgresql-contrib-$PG_VERSION"
