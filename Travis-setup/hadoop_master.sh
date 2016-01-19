@@ -23,8 +23,8 @@ sudo -u hadoopuser bash << EOF
 mkdir -p /home/hadoopuser/.ssh
 #Generate a ssh key for the user
 ssh-keygen -t rsa -P "" -f /home/hadoopuser/.ssh/id_rsa
-#cp Vagrant-setup/travis_hadoop_files/hadoop_files/id_rsa.pub  /home/hadoopuser/.ssh/
-#cp Vagrant-setup/travis_hadoop_files/id_rsa  /home/hadoopuser/.ssh/
+#cp Vagrant-setup/hadoop_files/hadoop_files/id_rsa.pub  /home/hadoopuser/.ssh/
+#cp Vagrant-setup/hadoop_files/id_rsa  /home/hadoopuser/.ssh/
 cat /home/hadoopuser/.ssh/id_rsa.pub >> /home/hadoopuser/.ssh/authorized_keys
 #
 chmod 640 /home/hadoopuser/.ssh/authorized_keys
@@ -47,22 +47,22 @@ export HADOOP_HOME=/home/hadoopuser/hadoop
 export PATH=$PATH:$HADOOP_HOME/bin
 export PATH=$PATH:$HADOOP_HOME/sbin
 
-cp $TRAVIS_BUILD_DIR/Vagrant-setup/hadoop_files/hadoop-env.sh /home/hadoopuser/hadoop/etc/hadoop/hadoop-env.sh
+cp $TRAVIS_BUILD_DIR/Travis-setup/hadoop_files/hadoop-env.sh /home/hadoopuser/hadoop/etc/hadoop/hadoop-env.sh
 #dos2unix /home/hadoopuser/hadoop/etc/hadoop/hadoop-env.sh
-cp $TRAVIS_BUILD_DIR/Vagrant-setup/travis_hadoop_files/core-site.xml /home/hadoopuser/hadoop/etc/hadoop/core-site.xml
+cp $TRAVIS_BUILD_DIR/Travis-setup/hadoop_files/core-site.xml /home/hadoopuser/hadoop/etc/hadoop/core-site.xml
 #dos2unix /home/hadoopuser/hadoop/etc/hadoop/core-site.xml
 #master only
-cp $TRAVIS_BUILD_DIR/Vagrant-setup/travis_hadoop_files/mapred-site.xml /home/hadoopuser/hadoop/etc/hadoop/mapred-site.xml
+cp $TRAVIS_BUILD_DIR/Travis-setup/hadoop_files/mapred-site.xml /home/hadoopuser/hadoop/etc/hadoop/mapred-site.xml
 #dos2unix /home/hadoopuser/hadoop/etc/hadoop/mapred-site.xml
 #create directories for master and slave
 mkdir -p /home/hadoopuser/hadoop-data/hadoopuser/hdfs/namenode
 mkdir -p /home/hadoopuser/hadoop-data/hadoopuser/hdfs/datanode
 
-cp $TRAVIS_BUILD_DIR/Vagrant-setup/hadoop_files/hdfs-site.xml /home/hadoopuser/hadoop/etc/hadoop/hdfs-site.xml
+cp $TRAVIS_BUILD_DIR/Travis-setup/hadoop_files/hdfs-site.xml /home/hadoopuser/hadoop/etc/hadoop/hdfs-site.xml
 #dos2unix /home/hadoopuser/hadoop/etc/hadoop/hdfs-site.xml
-cp $TRAVIS_BUILD_DIR/Vagrant-setup/travis_hadoop_files/yarn-site.xml /home/hadoopuser/hadoop/etc/hadoop/yarn-site.xml
+cp $TRAVIS_BUILD_DIR/Travis-setup/hadoop_files/yarn-site.xml /home/hadoopuser/hadoop/etc/hadoop/yarn-site.xml
 #dos2unix /home/hadoopuser/hadoop/etc/hadoop/yarn-site.xml
-cp $TRAVIS_BUILD_DIR/Vagrant-setup/travis_hadoop_files/slaves /home/hadoopuser/hadoop/etc/hadoop/slaves
+cp $TRAVIS_BUILD_DIR/Travis-setup/hadoop_files/slaves /home/hadoopuser/hadoop/etc/hadoop/slaves
 #dos2unix /home/hadoopuser/hadoop/etc/hadoop/slaves
 
 bash /home/hadoopuser/hadoop/bin/hdfs namenode -format
