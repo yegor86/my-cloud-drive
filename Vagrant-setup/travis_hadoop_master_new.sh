@@ -32,10 +32,10 @@ echo "hadoopuser:password" | sudo chpasswd
 sudo -u hadoopuser bash << EOF
 
 mkdir -p /home/hadoopuser/.ssh
-Generate a ssh key for the user
+#Generate a ssh key for the user
 ssh-keygen -t rsa -P "" -f /home/hadoopuser/.ssh/id_rsa
-cp Vagrant-setup/travis_hadoop_files/hadoop_files/id_rsa.pub  /home/hadoopuser/.ssh/
-cp Vagrant-setup/travis_hadoop_files/id_rsa  /home/hadoopuser/.ssh/
+#cp Vagrant-setup/travis_hadoop_files/hadoop_files/id_rsa.pub  /home/hadoopuser/.ssh/
+#cp Vagrant-setup/travis_hadoop_files/id_rsa  /home/hadoopuser/.ssh/
 cat /home/hadoopuser/.ssh/id_rsa.pub >> /home/hadoopuser/.ssh/authorized_keys
 #
 chmod 640 /home/hadoopuser/.ssh/authorized_keys
@@ -52,7 +52,6 @@ ssh-keyscan localhost >> /home/hadoopuser/.ssh/known_hosts
 cd /home/hadoopuser
 wget http://www.eu.apache.org/dist/hadoop/core/hadoop-2.7.1/hadoop-2.7.1.tar.gz
 
-#cp /mnt/bootstrap/hadoop-2.7.1.tar.gz /home/hadoopuser/
 tar xvf hadoop-2.7.1.tar.gz
 mv hadoop-2.7.1 hadoop
 
@@ -85,6 +84,10 @@ dos2unix /home/hadoopuser/hadoop/etc/hadoop/slaves
 
 bash /home/hadoopuser/hadoop/bin/hdfs namenode -format
 EOF
+
+echo 'checking hadoop files content'
+cat /home/hadoopuser/hadoop/etc/hadoop/core-site.xml
+cat /home/hadoopuser/hadoop/etc/hadoop/mapred-site.xml
 
 # Start Datanode and Yarn
 sudo -u hadoopuser bash /home/hadoopuser/hadoop/sbin/start-dfs.sh
