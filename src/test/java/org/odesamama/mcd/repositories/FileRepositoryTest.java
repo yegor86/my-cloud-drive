@@ -7,8 +7,9 @@ import org.odesamama.mcd.Application;
 import org.odesamama.mcd.domain.File;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -17,7 +18,8 @@ import java.util.List;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
-@WebAppConfiguration
+@Transactional
+@Rollback(true)
 public class FileRepositoryTest {
 
     @Autowired
@@ -27,7 +29,7 @@ public class FileRepositoryTest {
 
     @Test
     public void getFilesByUserAntPath(){
-        List<File> files = fileRepository.getFilesListForGivenDirectoryPath(USER_EMAIL, null);
+        List<File> files = fileRepository.getFilesListForGivenDirectoryPath(USER_EMAIL, "/");
         Assert.assertNotNull(files);
     }
 }
