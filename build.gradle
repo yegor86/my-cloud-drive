@@ -123,11 +123,22 @@ test {
     println('Check task is executed')
 
     //set travis config file
-    run { systemProperty "spring.profiles.active", "travis" }
+    systemProperty "spring.profiles.active", "travis"
 
     exclude 'org/odesamama/mcd/controllers/**'
     exclude 'org/odesamama/mcd/service/**'
     exclude 'org/odesamama/mcd/multitenancy/**'
     include 'org/odesamama/mcd/repositories/**'
+
+    //enable for detailed output
+//    // listen to events in the test execution lifecycle
+//    beforeTest { descriptor ->
+//        logger.lifecycle("Running test: " + descriptor)
+//    }
+//
+//    // listen to standard out and standard error of the test JVM(s)
+//    onOutput { descriptor, event ->
+//        logger.lifecycle("Test: " + descriptor + " produced standard out/err: " + event.message )
+//    }
 
 }
