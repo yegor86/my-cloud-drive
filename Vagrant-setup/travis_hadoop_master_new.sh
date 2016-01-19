@@ -10,7 +10,7 @@ sudo apt-get -y install python-software-properties
 # openjdk
 #sudo apt-get -y update
 #sudo apt-get -y install openjdk-7-jdk
-#sudo ln -s /usr/lib/jvm/java-1.7.0-openjdk-amd64 /usr/lib/jvm/java
+sudo ln -s /usr/lib/jvm/java-1.7.0-openjdk-amd64 /usr/lib/jvm/java
 
 sudo apt-get -y install dos2unix
 
@@ -65,22 +65,22 @@ export PATH=$PATH:$HADOOP_HOME/sbin
 #dos2unix /mnt/bootstrap/hadoop_files/.bashrc /home/hadoopuser/.bashrc
 
 cp $TRAVIS_BUILD_DIR/Vagrant-setup/hadoop_files/hadoop-env.sh /home/hadoopuser/hadoop/etc/hadoop/hadoop-env.sh
-dos2unix /home/hadoopuser/hadoop/etc/hadoop/hadoop-env.sh
+#dos2unix /home/hadoopuser/hadoop/etc/hadoop/hadoop-env.sh
 cp $TRAVIS_BUILD_DIR/Vagrant-setup/travis_hadoop_files/core-site.xml /home/hadoopuser/hadoop/etc/hadoop/core-site.xml
-dos2unix /home/hadoopuser/hadoop/etc/hadoop/core-site.xml
+#dos2unix /home/hadoopuser/hadoop/etc/hadoop/core-site.xml
 #master only
 cp $TRAVIS_BUILD_DIR/Vagrant-setup/travis_hadoop_files/mapred-site.xml /home/hadoopuser/hadoop/etc/hadoop/mapred-site.xml
-dos2unix /home/hadoopuser/hadoop/etc/hadoop/mapred-site.xml
+#dos2unix /home/hadoopuser/hadoop/etc/hadoop/mapred-site.xml
 #create directories for master and slave
 mkdir -p /home/hadoopuser/hadoop-data/hadoopuser/hdfs/namenode
 mkdir -p /home/hadoopuser/hadoop-data/hadoopuser/hdfs/datanode
 
 cp $TRAVIS_BUILD_DIR/Vagrant-setup/hadoop_files/hdfs-site.xml /home/hadoopuser/hadoop/etc/hadoop/hdfs-site.xml
-dos2unix /home/hadoopuser/hadoop/etc/hadoop/hdfs-site.xml
+#dos2unix /home/hadoopuser/hadoop/etc/hadoop/hdfs-site.xml
 cp $TRAVIS_BUILD_DIR/Vagrant-setup/travis_hadoop_files/yarn-site.xml /home/hadoopuser/hadoop/etc/hadoop/yarn-site.xml
-dos2unix /home/hadoopuser/hadoop/etc/hadoop/yarn-site.xml
+#dos2unix /home/hadoopuser/hadoop/etc/hadoop/yarn-site.xml
 cp $TRAVIS_BUILD_DIR/Vagrant-setup/travis_hadoop_files/slaves /home/hadoopuser/hadoop/etc/hadoop/slaves
-dos2unix /home/hadoopuser/hadoop/etc/hadoop/slaves
+#dos2unix /home/hadoopuser/hadoop/etc/hadoop/slaves
 
 bash /home/hadoopuser/hadoop/bin/hdfs namenode -format
 EOF
