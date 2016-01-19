@@ -7,21 +7,10 @@ sudo sed -i 's/net.ipv6.bindv6only\ =\ 1/net.ipv6.bindv6only\ =\ 0/' \
 
 sudo apt-get -y install python-software-properties
 
-# openjdk
-#sudo apt-get -y update
-#sudo apt-get -y install openjdk-7-jdk
+# java 8 is installed by travis
 sudo ln -s /usr/lib/jvm/java-8-oracle /usr/lib/jvm/java
 
 sudo apt-get -y install dos2unix
-
-#copy sripst to run at startup and shutdown
-#cp /mnt/bootstrap/hadoop_files/rc.local /etc/rc.local
-#dos2unix /mnt/bootstrap/hadoop_files/rc.local /etc/rc.local
-#chmod +x /etc/rc.local
-
-#cp /mnt/bootstrap/hadoop_files/K99stophadoop.sh /etc/rc6.d/K99stophadoop.sh
-#dos2unix /mnt/bootstrap/hadoop_files/K99stophadoop.sh /etc/rc6.d/K99stophadoop.sh
-#chmod +x /etc/rc6.d/K99stophadoop.sh
 
 # Create hadoopgroup
 sudo addgroup hadoopgroup
@@ -45,8 +34,6 @@ export HOME=/home/hadoopuser
 #
 ssh-keyscan 0.0.0.0 >> /home/hadoopuser/.ssh/known_hosts
 ssh-keyscan localhost >> /home/hadoopuser/.ssh/known_hosts
-#ssh-keyscan 192.168.205.11 >> /home/hadoopuser/.ssh/known_hosts
-#ssh-keyscan 192.168.205.12 >> /home/hadoopuser/.ssh/known_hosts
 
 #unpack hadoop
 cd /home/hadoopuser
@@ -59,10 +46,6 @@ export HADOOP_HOME=/home/hadoopuser/hadoop
 # Add Hadoop bin and sbin directory to PATH
 export PATH=$PATH:$HADOOP_HOME/bin
 export PATH=$PATH:$HADOOP_HOME/sbin
-
-#set enviroment variables
-#cp /mnt/bootstrap/hadoop_files/.bashrc /home/hadoopuser/.bashrc
-#dos2unix /mnt/bootstrap/hadoop_files/.bashrc /home/hadoopuser/.bashrc
 
 cp $TRAVIS_BUILD_DIR/Vagrant-setup/hadoop_files/hadoop-env.sh /home/hadoopuser/hadoop/etc/hadoop/hadoop-env.sh
 #dos2unix /home/hadoopuser/hadoop/etc/hadoop/hadoop-env.sh
@@ -84,10 +67,6 @@ cp $TRAVIS_BUILD_DIR/Vagrant-setup/travis_hadoop_files/slaves /home/hadoopuser/h
 
 bash /home/hadoopuser/hadoop/bin/hdfs namenode -format
 EOF
-
-echo 'checking hadoop files content'
-cat /home/hadoopuser/hadoop/etc/hadoop/core-site.xml
-cat /home/hadoopuser/hadoop/etc/hadoop/mapred-site.xml
 
 # Start Datanode and Yarn
 sudo -u hadoopuser bash /home/hadoopuser/hadoop/sbin/start-dfs.sh
