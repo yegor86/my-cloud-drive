@@ -126,7 +126,7 @@ test {
     systemProperty "spring.profiles.active", "travis"
 
     exclude 'org/odesamama/mcd/controllers/**'
-    exclude 'org/odesamama/mcd/service/**'
+    include 'org/odesamama/mcd/service/**'
     exclude 'org/odesamama/mcd/multitenancy/**'
     include 'org/odesamama/mcd/repositories/**'
 
