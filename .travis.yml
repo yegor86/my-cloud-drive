@@ -7,7 +7,7 @@ jdk:
 services:
   - postgresql
 before_install:
-  - sudo bash Vagrant-setup/hadoop_master_new.sh
+  - sudo bash Vagrant-setup/travis_hadoop_master_new.sh
   - sudo bash Vagrant-setup/travis_create_db_users.sh
 
 
