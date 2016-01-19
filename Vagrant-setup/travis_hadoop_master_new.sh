@@ -10,7 +10,7 @@ sudo apt-get -y install python-software-properties
 # openjdk
 #sudo apt-get -y update
 #sudo apt-get -y install openjdk-7-jdk
-sudo ln -s /usr/lib/jvm/java-1.7.0-openjdk-amd64 /usr/lib/jvm/java
+sudo ln -s /usr/lib/jvm/java-8-oracle /usr/lib/jvm/java
 
 sudo apt-get -y install dos2unix
 
