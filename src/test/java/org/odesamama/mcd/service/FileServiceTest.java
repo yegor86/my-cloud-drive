@@ -8,7 +8,6 @@ import org.odesamama.mcd.services.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -19,7 +18,6 @@ import java.net.URISyntaxException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
-@WebAppConfiguration
 public class FileServiceTest {
 
     @Autowired
@@ -30,7 +28,6 @@ public class FileServiceTest {
         User user = new User();
         user.setUserId(System.nanoTime());
         fileService.createHomeDirectoryForUser(user);
-        System.out.println("home directory created");
     }
 
 }
