@@ -61,11 +61,6 @@ public class FileController {
         return HttpStatus.OK;
     }
 
-    @RequestMapping(value = "", method = RequestMethod.GET)
-    public Iterable<File> getFiles() {
-        return fileRepository.findAll();
-    }
-
     @RequestMapping(value = "/createfolder", method = RequestMethod.POST)
     public @ResponseBody HttpStatus createFolder(@RequestParam("path") String path, @RequestParam("email") String email)
             throws IOException, URISyntaxException {
@@ -76,18 +71,18 @@ public class FileController {
     }
 
     @RequestMapping(value = "/sharefolder", method = RequestMethod.POST)
-    public void shareFolder(@RequestParam("path") String filePath, @RequestParam("ownerUid") String ownerUid,
+    public void shareFolder(@RequestParam("path") String filePath, @RequestParam("email") String email,
             @RequestParam("userUid") String userUid, @RequestParam("permissions") String permissions) {
-        validateFolder(ownerUid, filePath);
+        validateFolder(email, filePath);
 
         User user = userRepository.findByEmail(userUid);
         if (user == null) {
             throw new UserNotExistsException("User: " + userUid);
         }
 
-        File file = fileRepository.getFileInfoByFilePathAndEmail(ownerUid, filePath);
+        File file = fileRepository.getFileInfoByFilePathAndEmail(email, filePath);
         if (file == null) {
-            throw new NoSuchResourceException("File:" + filePath + ", Owner: " + ownerUid);
+            throw new NoSuchResourceException("File:" + filePath + ", Owner: " + email);
         }
 
         Group group = groupService.getOrCreateGroup(file);
@@ -127,7 +122,9 @@ public class FileController {
         String filePath = exctractPathFromRequest(request, email);
         validateFolder(email, filePath);
 
-        return fileRepository.getFilesListForGivenDirectoryPath(email, filePath);
+        // return fileRepository.getFilesListForGivenDirectoryPath(email,
+        // filePath);
+        return fileRepository.getListByPath(email, filePath);
     }
 
     private String exctractPathFromRequest(HttpServletRequest request, String email) {

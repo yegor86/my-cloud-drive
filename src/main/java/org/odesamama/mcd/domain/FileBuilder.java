@@ -1,5 +1,6 @@
 package org.odesamama.mcd.domain;
 
+import java.util.Date;
 import java.util.UUID;
 
 public class FileBuilder {
@@ -9,6 +10,8 @@ public class FileBuilder {
     private Group group;
     private String name;
     private String path;
+    private Date created;
+    private Date updated;
     private File parent;
     private Integer size;
     private Boolean isFolder;
@@ -39,6 +42,16 @@ public class FileBuilder {
         return this;
     }
 
+    public FileBuilder created(Date created) {
+        this.created = created;
+        return this;
+    }
+
+    public FileBuilder updated(Date updated) {
+        this.updated = updated;
+        return this;
+    }
+
     public FileBuilder parent(File parent) {
         this.parent = parent;
         return this;
@@ -64,6 +77,8 @@ public class FileBuilder {
         file.setFileUid(fileUid);
         file.setOwner(owner);
         file.setName(name);
+        file.setCreated(created);
+        file.setUpdated(updated);
         file.setPath(path);
         file.setParent(parent);
         file.setSize(size);

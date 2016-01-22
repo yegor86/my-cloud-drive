@@ -7,4 +7,6 @@ import org.odesamama.mcd.domain.User;
 public interface CustomAclRepository {
 
     Acl findAclByUserAndGroup(User user, Group group);
+
+    boolean saveAcl(Acl acl);
 }

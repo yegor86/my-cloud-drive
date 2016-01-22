@@ -18,7 +18,7 @@ $ curl -i -X POST \
 ```bash
 $ curl -i -X POST \
   -F "path=/dir0/dir02" \
-  -F "ownerUid=admin@mail.com" \
+  -F "email=admin@mail.com" \
   -F "userUid=yegor@mail.com" \
   -F "permissions=GROUP_WRITE" \
   http://localhost:3030/files/sharefolder
@@ -40,6 +40,6 @@ $ curl -i \
 ```
 #### /files/download/${email}/${filePath}
 ```bash
-$ curl -i \
+$ curl -i -O \
   http://localhost:3030/files/download/admin@mail.com/file
 ````

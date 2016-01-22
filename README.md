@@ -11,6 +11,8 @@
 
 * [Make server executable](docs/MakeExecutable.md)
 
+* [Multitenancy](docs/Multitenancy.md)
+
 * [Docker Guide](docs/Docker.md)
 
 * [Troubleshooting Guide](docs/TroubleshootingGuide.md)

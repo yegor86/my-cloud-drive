@@ -11,7 +11,9 @@ import org.odesamama.mcd.repositories.GroupRepository;
 import org.odesamama.mcd.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @Service
 public class GroupServiceImpl implements GroupService {
 
@@ -47,14 +49,16 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Group getOrCreateGroup(File file) {
-        Group group = groupRepository.findByName(file.getOwner().getUserEmail() + "_" + file.getFileUid());
+        Group group = groupRepository.findByName(file.getFileUid());
         if (group != null) {
             return group;
         }
         group = new Group();
         group.setOwner(file.getOwner());
-        group.setGroupName(file.getOwner().getUserEmail() + "_" + file.getFileUid());
-        return groupRepository.save(group);
+        group.setGroupName(file.getFileUid());
+        groupRepository.saveGroup(group);
+        groupRepository.save(group);
+        return group;
     }
 
     @Override
@@ -64,7 +68,7 @@ public class GroupServiceImpl implements GroupService {
             throw new IllegalStateException("Access level already exists");
         }
         acl = new AclBuilder().user(user).group(group).permissions(perms).build();
-        aclRepository.save(acl);
+        aclRepository.saveAcl(acl);
     }
 
     @Override
