@@ -4,31 +4,19 @@ package org.odesamama.mcd.dto;
  * Created by starnakin on 15.10.2015.
  */
 public class ErrorDto {
-    public static enum ErrorType {
-        CLIENT_ERROR, SERVER_ERROR
-    }
-
     private String message;
-    private ErrorType type;
+    private int status;
 
-    public ErrorDto(String message, ErrorType type) {
+    public ErrorDto(String message, int status) {
         this.message = message;
-        this.type = type;
+        this.status = status;
     }
 
     public String getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public ErrorType getType() {
-        return type;
-    }
-
-    public void setType(ErrorType type) {
-        this.type = type;
+    public int getStatus() {
+        return status;
     }
 }

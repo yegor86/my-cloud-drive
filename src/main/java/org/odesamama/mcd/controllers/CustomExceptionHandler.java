@@ -2,6 +2,7 @@ package org.odesamama.mcd.controllers;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.odesamama.mcd.dto.ErrorDto;
 import org.odesamama.mcd.exeptions.EmailTakenException;
 import org.odesamama.mcd.exeptions.NoSuchResourceException;
 import org.odesamama.mcd.exeptions.ResourceAlreadyExistsException;
@@ -10,8 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -24,9 +27,12 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @ExceptionHandler({ Exception.class })
-    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "Service is unavailable")
-    public void defaultExceptionHandler(HttpServletRequest req, Exception exception) {
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    public ResponseEntity<Object> defaultExceptionHandler(HttpServletRequest req, Exception exception) {
         logger.error("handle exception", exception);
+        ErrorDto errorDto = new ErrorDto(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
+        return new ResponseEntity<Object>(errorDto, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler({ EmailTakenException.class })
