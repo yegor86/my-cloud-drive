@@ -8,6 +8,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.Validate;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -64,7 +65,7 @@ public class FileServiceImpl implements FileService {
         }
 
         if (fileRepository.getFileInfoByFilePathAndEmail(email, filePath) != null) {
-            throw new ResourceAlreadyExistsException();
+            throw new ResourceAlreadyExistsException("File already exists");
         }
 
         File file = saveFileMetadata(user, filePath, bytes.length, false);
@@ -163,6 +164,9 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public void updateFileGroup(File file, Group group) {
+        Validate.notNull(file.getParent());
+        Validate.notNull(file.getPath());
+
         file.setGroup(group);
         fileRepository.save(file);
     }

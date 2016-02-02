@@ -11,4 +11,6 @@ public interface CustomGroupRepository {
 
     Group findByName(String groupName);
 
+    boolean saveGroup(Group group);
+
 }

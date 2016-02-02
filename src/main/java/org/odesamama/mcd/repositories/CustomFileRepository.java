@@ -12,5 +12,7 @@ public interface CustomFileRepository {
 
     List<File> getFilesListForGivenDirectoryPath(String email, String path);
 
+    List<File> getListByPath(String email, String path);
+
     List<File> listFiles(String email, String path);
 }

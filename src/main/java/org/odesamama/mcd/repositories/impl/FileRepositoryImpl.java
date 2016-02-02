@@ -1,6 +1,9 @@
 package org.odesamama.mcd.repositories.impl;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -11,6 +14,7 @@ import org.odesamama.mcd.domain.File;
 import org.odesamama.mcd.domain.Group;
 import org.odesamama.mcd.domain.User;
 import org.odesamama.mcd.exeptions.NoSuchResourceException;
+import org.odesamama.mcd.exeptions.UserNotExistsException;
 import org.odesamama.mcd.repositories.CustomFileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -32,38 +36,20 @@ public class FileRepositoryImpl implements CustomFileRepository {
     @Override
     public File getFileInfoByFilePathAndEmail(String email, String path) {
         path = StringUtils.trimToEmpty(path);
-        List<File> fileList = jdbcTemplate.query(
-                "select * from files join public.users on user_id = owner_id where user_email = ? and file_path = ?",
-                new Object[] { email, path }, (rs, rowNum) -> {
-                    User owner = new User();
-                    owner.setUserId(rs.getLong("user_id"));
-                    owner.setUserUid(rs.getString("user_uid"));
-                    owner.setUserName(rs.getString("user_name"));
-                    owner.setLastName(rs.getString("last_name"));
-                    owner.setUserEmail(email);
 
-                    Group group = new Group();
-                    group.setGroupId(rs.getLong("group_id"));
-                    group.setGroupName(email);
-                    group.setOwner(owner);
+        List<Object[]> fileList = entityManager
+                .createNativeQuery(
+                        "select f.file_id, f.file_uid, f.file_name, f.file_path, f.file_size, f.create_date, f.update_date, f.is_folder, f.extension, f.group_id, u.user_id, u.user_uid, u.user_name, u.last_name"
+                                + " from files f join public.users u on u.user_id = f.owner_id where u.user_email = :email and f.file_path = :path")
+                .setParameter("email", email).setParameter("path", path).getResultList();
 
-                    File file = new File();
-                    file.setId(rs.getLong("file_id"));
-                    file.setFileUid(rs.getString("file_uid"));
-                    file.setName(rs.getString("file_name"));
-                    file.setPath(rs.getString("file_path"));
-                    file.setSize(rs.getInt("file_size"));
-                    file.setCreated(rs.getDate("create_date"));
-                    file.setUpdated(rs.getDate("update_date"));
-                    file.setFolder(rs.getBoolean("is_folder"));
-                    file.setExtension(rs.getString("extension"));
-                    file.setOwner(owner);
-                    file.setGroup(group);
-
-                    return file;
-                });
-
-        return !fileList.isEmpty() ? (File) fileList.get(0) : null;
+        if (!fileList.isEmpty()) {
+            File file = recordToFile(fileList.get(0));
+            file.getOwner().setUserEmail(email);
+            file.getGroup().setGroupName(email);
+            return file;
+        }
+        return null;
     }
 
     @Override
@@ -82,5 +68,80 @@ public class FileRepositoryImpl implements CustomFileRepository {
     @Override
     public List<File> listFiles(String email, String path) {
         return Collections.emptyList();
+    }
+
+    @Override
+    public List<File> getListByPath(String email, String path) {
+
+        List<User> userList = jdbcTemplate.query("select * from public.users where user_email = ?",
+                new Object[] { email }, (rs, rowNum) -> {
+                    User user = new User();
+                    user.setUserId(rs.getLong("user_id"));
+                    user.setUserUid(rs.getString("user_uid"));
+                    user.setUserName(rs.getString("user_name"));
+                    user.setLastName(rs.getString("last_name"));
+                    user.setUserEmail(email);
+
+                    return user;
+                });
+        if (userList.isEmpty()) {
+            throw new UserNotExistsException("User was not found with email: " + email);
+        }
+        User user = userList.get(0);
+
+        File parentFolder = getFileInfoByFilePathAndEmail(email, path);
+        if (parentFolder == null || !parentFolder.isFolder()) {
+            throw new NoSuchResourceException();
+        }
+
+        List<Object[]> resultList = entityManager
+                .createNativeQuery("select * from public.select_all_files(:userId,:parentFileId)")
+                .setParameter("userId", user.getUserId()).setParameter("parentFileId", parentFolder.getId())
+                .getResultList();
+        List<File> fileList = new ArrayList<>();
+
+        for (Object[] objectArray : resultList) {
+
+            File file = recordToFile(objectArray);
+            file.getOwner().setUserId(user.getUserId());
+            file.getOwner().setUserEmail(email);
+            file.getGroup().setGroupName(email);
+            fileList.add(file);
+        }
+
+        return fileList;
+    }
+
+    private File recordToFile(Object[] record) {
+        User owner = new User();
+        owner.setUserId(((BigInteger) record[10]).longValue());
+        if (record.length > 11) {
+            owner.setUserUid((String) record[11]);
+        }
+        if (record.length > 12) {
+            owner.setUserName((String) record[12]);
+        }
+        if (record.length > 13) {
+            owner.setLastName((String) record[13]);
+        }
+
+        Group group = new Group();
+        group.setGroupId(((BigInteger) record[9]).longValue());
+        group.setOwner(owner);
+
+        File file = new File();
+        file.setId(((BigInteger) record[0]).longValue());
+        file.setFileUid((String) record[1]);
+        file.setName((String) record[2]);
+        file.setPath((String) record[3]);
+        file.setSize(((BigInteger) record[4]).intValue());
+        file.setCreated((Date) record[5]);
+        file.setUpdated((Date) record[6]);
+        file.setFolder((Boolean) record[7]);
+        file.setExtension((String) record[8]);
+        file.setOwner(owner);
+        file.setGroup(group);
+
+        return file;
     }
 }
