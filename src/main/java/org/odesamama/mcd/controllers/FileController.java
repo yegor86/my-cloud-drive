@@ -1,11 +1,5 @@
 package org.odesamama.mcd.controllers;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang3.StringUtils;
 import org.odesamama.mcd.domain.File;
 import org.odesamama.mcd.domain.Group;
@@ -17,6 +11,8 @@ import org.odesamama.mcd.repositories.FileRepository;
 import org.odesamama.mcd.repositories.UserRepository;
 import org.odesamama.mcd.services.FileService;
 import org.odesamama.mcd.services.GroupService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -24,14 +20,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.AntPathMatcher;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.HandlerMapping;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 /**
  * Created by starnakin on 07.10.2015.
@@ -52,6 +48,8 @@ public class FileController {
 
     @Autowired
     private UserRepository userRepository;
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public @ResponseBody HttpStatus uploadFile(@RequestParam("filePath") String filePath,
@@ -106,6 +104,7 @@ public class FileController {
         File file = fileRepository.getFileInfoByFilePathAndEmail(email, filePath);
 
         if (file == null) {
+            logger.debug("file {} not found for email {}", filePath, email);
             throw new NoSuchResourceException();
         }
 
