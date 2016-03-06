@@ -21,11 +21,10 @@ create or replace function public.select_all_files(userId bigint, parentFileId b
     ) as $$
 declare
     user_email varchar(255);
-    is_present boolean;
 begin
     
 	for user_email in
-        select 
+        select distinct
             u.user_email
         from 
             public.groups g
