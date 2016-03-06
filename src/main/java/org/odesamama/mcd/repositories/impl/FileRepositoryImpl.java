@@ -37,19 +37,11 @@ public class FileRepositoryImpl implements CustomFileRepository {
     public File getFileInfoByFilePathAndEmail(String email, String path) {
         path = StringUtils.trimToEmpty(path);
 
-        List<Object[]> fileList = entityManager
-                .createNativeQuery(
-                        "select f.file_id, f.file_uid, f.file_name, f.file_path, f.file_size, f.create_date, f.update_date, f.is_folder, f.extension, f.group_id, u.user_id, u.user_uid, u.user_name, u.last_name"
-                                + " from files f join public.users u on u.user_id = f.owner_id where u.user_email = :email and f.file_path = :path")
+        List<Object[]> resultList = entityManager
+                .createNativeQuery("select * from public.get_file_info_by_filepath_and_email(:email, :path)")
                 .setParameter("email", email).setParameter("path", path).getResultList();
 
-        if (!fileList.isEmpty()) {
-            File file = recordToFile(fileList.get(0));
-            file.getOwner().setUserEmail(email);
-            file.getGroup().setGroupName(email);
-            return file;
-        }
-        return null;
+        return !resultList.isEmpty() ? recordToFile(resultList.get(0)) : null;
     }
 
     @Override
