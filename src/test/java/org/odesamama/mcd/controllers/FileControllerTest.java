@@ -34,7 +34,7 @@ public class FileControllerTest {
 
     private static final String UPLOAD_FILE = "/files/upload";
 
-    private static final String LOAD_FILE = "/files/download/%s/%s";
+    private static final String DOWNLOAD_FILE = "/files/download/%s/%s";
 
     private static final String USER_EMAIL = "admin@mail.com";
 
@@ -73,7 +73,8 @@ public class FileControllerTest {
             given().parameter("filePath", folderName + "/" + System.nanoTime() + file.getName()).multiPart(file)
                     .parameter("email", USER_EMAIL).post(UPLOAD_FILE).then().statusCode(HttpStatus.SC_OK);
 
-            Assert.assertTrue(when().get(String.format(GET_FILE_LIST_BY_PATH, USER_EMAIL,folderName)).asString().contains(file.getName()));
+            Assert.assertTrue(when().get(String.format(GET_FILE_LIST_BY_PATH, USER_EMAIL, folderName)).asString()
+                    .contains(file.getName()));
 
         }
 
@@ -82,7 +83,7 @@ public class FileControllerTest {
     @Test
     public void loadFileTest() {
         try {
-            when().get(String.format(LOAD_FILE, USER_EMAIL, FILE_NAME)).asInputStream().close();
+            when().get(String.format(DOWNLOAD_FILE, USER_EMAIL, FILE_NAME)).asInputStream().close();
         } catch (Exception e) {
             Assert.assertTrue("Method thrown unexpected exception" + e.getStackTrace(), false);
         }
@@ -113,8 +114,9 @@ public class FileControllerTest {
                 .statusCode(HttpStatus.SC_OK);
 
         // Upload file to it
-        given().parameter("filePath", folderName + "/" + System.nanoTime() + file.getName()).multiPart(file)
-                .parameter("email", USER_EMAIL).post(UPLOAD_FILE).then().statusCode(HttpStatus.SC_OK);
+        String filePath = folderName + "/" + System.nanoTime() + file.getName();
+        given().parameter("filePath", filePath).multiPart(file).parameter("email", USER_EMAIL).post(UPLOAD_FILE).then()
+                .statusCode(HttpStatus.SC_OK);
 
         // Share folder
         given().parameter("path", folderName).parameter("email", USER_EMAIL).parameter("userUid", "masdeft@gmail.com")
@@ -123,6 +125,14 @@ public class FileControllerTest {
         // List shared folder with different user
         Assert.assertTrue(when().get(String.format(GET_FILE_LIST_BY_PATH, "masdeft@gmail.com", folderName.substring(1)))
                 .asString().contains(file.getName()));
+
+        // Download the shared file with different user
+        try {
+            when().get(String.format(DOWNLOAD_FILE, "masdeft@gmail.com", filePath.substring(1))).asInputStream()
+                    .close();
+        } catch (Exception e) {
+            Assert.assertTrue("Method thrown unexpected exception" + e.getStackTrace(), false);
+        }
 
     }
 }

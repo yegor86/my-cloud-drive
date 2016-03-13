@@ -36,10 +36,6 @@ public class User {
     @JsonIgnore
     private Long userId;
 
-    @Column(name = "user_uid")
-    @JsonIgnore
-    private String userUid;
-
     @Column(name = "user_name")
     private String userName;
 
@@ -67,14 +63,6 @@ public class User {
     @JsonIgnore
     private Date updated;
 
-    public User() {
-
-    }
-
-    public User(String userUid) {
-        this.userUid = userUid;
-    }
-
     @PreUpdate
     public void preUpdate() {
         updated = new Date();
@@ -92,14 +80,6 @@ public class User {
 
     public void setUserId(Long userId) {
         this.userId = userId;
-    }
-
-    public String getUserUid() {
-        return userUid;
-    }
-
-    public void setUserUid(String userUid) {
-        this.userUid = userUid;
     }
 
     public String getUserName() {
@@ -174,14 +154,13 @@ public class User {
 
         User user = (User) o;
 
-        return new EqualsBuilder().append(userId, user.userId).append(userUid, user.userUid)
-                .append(userName, user.userName).append(lastName, user.lastName).append(userEmail, user.userEmail)
-                .isEquals();
+        return new EqualsBuilder().append(userId, user.userId).append(userName, user.userName)
+                .append(lastName, user.lastName).append(userEmail, user.userEmail).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(userId).append(userUid).append(userName).append(lastName)
-                .append(userEmail).toHashCode();
+        return new HashCodeBuilder(17, 37).append(userId).append(userName).append(lastName).append(userEmail)
+                .toHashCode();
     }
 }

@@ -2,7 +2,6 @@ package org.odesamama.mcd.repositories.impl;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -22,6 +21,9 @@ import org.springframework.stereotype.Repository;
 
 /**
  * Created by starnakin on 12.11.2015.
+ *
+ * @author starnakin
+ * @author Yegor Fadeev
  */
 
 @Repository
@@ -44,14 +46,13 @@ public class FileRepositoryImpl implements CustomFileRepository {
 
         if (!resultList.isEmpty()) {
             File file = recordToFile(resultList.get(0));
-            file.getOwner().setUserEmail(email);
             return file;
         }
         return null;
     }
 
     @Override
-    public List<File> getFileListByFilePathAndEmail(String email, String path) {
+    public List<File> getLocalFileListByPath(String email, String path) {
 
         File parentFolder = getFileInfoByFilePathAndEmail(email, path);
 
@@ -64,21 +65,15 @@ public class FileRepositoryImpl implements CustomFileRepository {
     }
 
     @Override
-    public List<File> listFiles(String email, String path) {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public List<File> getListByPath(String email, String path) {
+    public List<File> getSharedFileListByPath(String email, String path) {
 
         List<User> userList = jdbcTemplate.query("select * from public.users where user_email = ?",
                 new Object[] { email }, (rs, rowNum) -> {
                     User user = new User();
                     user.setUserId(rs.getLong("user_id"));
-                    user.setUserUid(rs.getString("user_uid"));
+                    user.setUserEmail(email);
                     user.setUserName(rs.getString("user_name"));
                     user.setLastName(rs.getString("last_name"));
-                    user.setUserEmail(email);
 
                     return user;
                 });
@@ -92,6 +87,7 @@ public class FileRepositoryImpl implements CustomFileRepository {
             throw new NoSuchResourceException();
         }
 
+        @SuppressWarnings("unchecked")
         List<Object[]> resultList = entityManager
                 .createNativeQuery("select * from public.select_all_files(:userId,:parentFileId)")
                 .setParameter("userId", user.getUserId()).setParameter("parentFileId", parentFolder.getId())
@@ -101,9 +97,15 @@ public class FileRepositoryImpl implements CustomFileRepository {
         for (Object[] objectArray : resultList) {
 
             File file = recordToFile(objectArray);
-            file.getOwner().setUserId(user.getUserId());
-            file.getOwner().setUserEmail(email);
-            file.getGroup().setGroupName(email);
+            if (file.getOwner().getUserId() == null) {
+                file.getOwner().setUserId(user.getUserId());
+            }
+            if (file.getOwner().getUserEmail() == null) {
+                file.getOwner().setUserEmail(email);
+            }
+            if (file.getGroup().getGroupName() == null) {
+                file.getGroup().setGroupName(email);
+            }
             fileList.add(file);
         }
 
@@ -114,7 +116,7 @@ public class FileRepositoryImpl implements CustomFileRepository {
         User owner = new User();
         owner.setUserId(((BigInteger) record[11]).longValue());
         if (record.length > 12) {
-            owner.setUserUid((String) record[12]);
+            owner.setUserEmail((String) record[12]);
         }
         if (record.length > 13) {
             owner.setUserName((String) record[13]);
