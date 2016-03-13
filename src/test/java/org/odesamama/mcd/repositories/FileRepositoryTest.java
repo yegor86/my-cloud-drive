@@ -28,8 +28,8 @@ public class FileRepositoryTest {
     public static final String USER_EMAIL = "admin@mail.com";
 
     @Test
-    public void testGetFileListByFilePathAndEmail() {
-        List<File> files = fileRepository.getFileListByFilePathAndEmail(USER_EMAIL, "/");
+    public void testGetLocalFileListByPath() {
+        List<File> files = fileRepository.getLocalFileListByPath(USER_EMAIL, "/");
         Assert.assertNotNull(files);
     }
 }

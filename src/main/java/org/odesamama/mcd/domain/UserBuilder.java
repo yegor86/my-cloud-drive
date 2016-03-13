@@ -5,7 +5,6 @@ import java.util.List;
 public class UserBuilder {
 
     private Long userId;
-    private String userUid;
     private String userName;
     private String lastName;
     private String userEmail;
@@ -14,11 +13,6 @@ public class UserBuilder {
 
     public UserBuilder userId(Long userId) {
         this.userId = userId;
-        return this;
-    }
-
-    public UserBuilder userUid(String userUid) {
-        this.userUid = userUid;
         return this;
     }
 
@@ -50,7 +44,6 @@ public class UserBuilder {
     public User build() {
         User user = new User();
         user.setUserId(userId);
-        user.setUserUid(userUid);
         user.setUserName(userName);
         user.setLastName(lastName);
         user.setUserEmail(userEmail);

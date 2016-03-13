@@ -169,7 +169,7 @@ public class FileServiceImpl implements FileService {
         dir.setGroup(group);
         fileRepository.save(dir);
 
-        List<File> fileList = fileRepository.getFileListByFilePathAndEmail(email, dir.getPath());
+        List<File> fileList = fileRepository.getLocalFileListByPath(email, dir.getPath());
         for (File file : fileList) {
             file.setGroup(group);
             fileRepository.save(file);

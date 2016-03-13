@@ -23,10 +23,9 @@ public class UserRepositoryImpl implements CustomUserRepository {
                 new Object[] { email }, (rs, rowNum) -> {
                     User user = new User();
                     user.setUserId(rs.getLong("user_id"));
-                    user.setUserUid(rs.getString("user_uid"));
+                    user.setUserEmail(email);
                     user.setUserName(rs.getString("user_name"));
                     user.setLastName(rs.getString("last_name"));
-                    user.setUserEmail(email);
 
                     return user;
                 });

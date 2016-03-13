@@ -10,9 +10,7 @@ import org.odesamama.mcd.domain.File;
 public interface CustomFileRepository {
     File getFileInfoByFilePathAndEmail(String email, String path);
 
-    List<File> getFileListByFilePathAndEmail(String email, String path);
+    List<File> getLocalFileListByPath(String email, String path);
 
-    List<File> getListByPath(String email, String path);
-
-    List<File> listFiles(String email, String path);
+    List<File> getSharedFileListByPath(String email, String path);
 }

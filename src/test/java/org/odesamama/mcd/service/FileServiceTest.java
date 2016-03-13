@@ -56,8 +56,8 @@ public class FileServiceTest {
     @Test(expected = Exception.class)
     public void testUpdateFileGroupNullParent() {
 
-        User owner = new UserBuilder().userUid(UUID.randomUUID().toString()).userName("test").lastName("test")
-                .userEmail("test@mail.org").group(defaultGroup).fileList(null).build();
+        User owner = new UserBuilder().userName("test").lastName("test").userEmail("test@mail.org").group(defaultGroup)
+                .fileList(null).build();
 
         userRepository.save(owner);
 

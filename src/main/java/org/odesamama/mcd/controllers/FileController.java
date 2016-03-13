@@ -1,5 +1,11 @@
 package org.odesamama.mcd.controllers;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.StringUtils;
 import org.odesamama.mcd.domain.File;
 import org.odesamama.mcd.domain.Group;
@@ -20,14 +26,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.AntPathMatcher;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.HandlerMapping;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.net.URISyntaxException;
 
 /**
  * Created by starnakin on 07.10.2015.
@@ -112,7 +118,7 @@ public class FileController {
 
         return ResponseEntity.ok().contentLength(file.getSize()).contentType(mediaType)
                 .header(HttpHeaders.CONTENT_DISPOSITION, headerValue)
-                .body(new InputStreamResource(fileService.getFile(filePath, email)));
+                .body(new InputStreamResource(fileService.getFile(filePath, file.getOwner().getUserEmail())));
 
     }
 
@@ -121,7 +127,7 @@ public class FileController {
         String filePath = exctractPathFromRequest(request, email);
         validateFolder(email, filePath);
 
-        return fileRepository.getListByPath(email, filePath);
+        return fileRepository.getSharedFileListByPath(email, filePath);
     }
 
     private String exctractPathFromRequest(HttpServletRequest request, String email) {
