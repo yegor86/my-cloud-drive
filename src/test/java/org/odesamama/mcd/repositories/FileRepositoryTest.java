@@ -1,5 +1,7 @@
 package org.odesamama.mcd.repositories;
 
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,8 +12,6 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 /**
  * Created by starnakin on 14.11.2015.
@@ -28,8 +28,8 @@ public class FileRepositoryTest {
     public static final String USER_EMAIL = "admin@mail.com";
 
     @Test
-    public void getFilesByUserAntPath(){
-        List<File> files = fileRepository.getFilesListForGivenDirectoryPath(USER_EMAIL, "/");
+    public void testGetFileListByFilePathAndEmail() {
+        List<File> files = fileRepository.getFileListByFilePathAndEmail(USER_EMAIL, "/");
         Assert.assertNotNull(files);
     }
 }

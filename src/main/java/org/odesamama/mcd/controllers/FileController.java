@@ -85,7 +85,7 @@ public class FileController {
 
         Group group = groupService.getOrCreateGroup(file);
         groupService.addUserToGroup(user, group, Permissions.valueOf(permissions));
-        fileService.updateFileGroup(file, group);
+        fileService.updateFileGroup(file, email, group);
     }
 
     @RequestMapping(value = "/download/{email:.+}/**", method = RequestMethod.GET)
@@ -121,8 +121,6 @@ public class FileController {
         String filePath = exctractPathFromRequest(request, email);
         validateFolder(email, filePath);
 
-        // return fileRepository.getFilesListForGivenDirectoryPath(email,
-        // filePath);
         return fileRepository.getListByPath(email, filePath);
     }
 

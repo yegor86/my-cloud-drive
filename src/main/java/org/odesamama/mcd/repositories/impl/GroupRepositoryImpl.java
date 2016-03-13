@@ -2,39 +2,31 @@ package org.odesamama.mcd.repositories.impl;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-
 import org.odesamama.mcd.domain.Group;
-import org.odesamama.mcd.domain.User;
 import org.odesamama.mcd.repositories.CustomGroupRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 public class GroupRepositoryImpl implements CustomGroupRepository {
 
-    @PersistenceContext
-    private EntityManager entityManager;
-
-    @Override
-    public long getLastGroupIdByUser(User user) {
-        TypedQuery<Group> q = entityManager.createQuery("from Group g where g.user = :user", Group.class);
-        q.setParameter("user", user);
-        return !q.getResultList().isEmpty() ? q.getResultList().get(0).getGroupId() : 0;
-    }
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Override
     public Group findByName(String groupName) {
-        List list = entityManager
-                .createNativeQuery("select * from public.groups g where g.group_name = :groupName", Group.class)
-                .setParameter("groupName", groupName).getResultList();
-        return !list.isEmpty() ? (Group) list.get(0) : null;
+        List<Group> groupList = jdbcTemplate.queryForList("select * from public.groups g where g.group_name = ?",
+                new Object[] { groupName }, Group.class);
+        return !groupList.isEmpty() ? groupList.get(0) : null;
     }
 
     @Override
-    public boolean saveGroup(Group group) {
-        return entityManager
-                .createNativeQuery("insert into public.groups (group_name, owner_id) values (:groupName, :ownerId)")
-                .setParameter("groupName", group.getGroupName()).setParameter("ownerId", group.getOwner().getUserId())
-                .executeUpdate() > 0;
+    public Long saveGroup(Group group) {
+
+        Long groupId = jdbcTemplate.queryForObject(
+                "insert into public.groups (group_name, owner_id) values (?, ?) RETURNING group_id",
+                new Object[] { group.getGroupName(), group.getOwner().getUserId() }, Long.class);
+
+        group.setGroupId(groupId);
+        return groupId;
     }
 }
