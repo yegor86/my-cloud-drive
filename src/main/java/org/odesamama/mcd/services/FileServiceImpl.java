@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.Validate;
@@ -68,8 +69,7 @@ public class FileServiceImpl implements FileService {
             throw new ResourceAlreadyExistsException("File already exists");
         }
 
-        File file = saveFileMetadata(user, filePath, bytes.length, false);
-        // saveUserRights(file, user, Permissions.USER_WRITE);
+        saveFileMetadata(user, filePath, bytes.length, false);
 
         Path path = new Path(String.format("%s/%s/%s", nameNodeUrl, email, filePath));
         saveFileToHDFS(path, conf, bytes);
@@ -87,8 +87,7 @@ public class FileServiceImpl implements FileService {
             throw new ResourceAlreadyExistsException();
         }
 
-        File file = saveFileMetadata(user, relativePath, 0, true);
-        // saveUserRights(file, user, Permissions.USER_WRITE);
+        saveFileMetadata(user, relativePath, 0, true);
 
         Path hdfsPath = new Path(String.format("%s/%s/%s", nameNodeUrl, email, relativePath));
         mkDirsHDFS(hdfsPath, conf);
@@ -112,7 +111,7 @@ public class FileServiceImpl implements FileService {
         }
     }
 
-    private File saveFileMetadata(User user, String filePath, int fileSize, Boolean isFolder) {
+    private File saveFileMetadata(User user, String filePath, int fileSize, boolean isFolder) {
         if (!filePath.startsWith("/")) {
             throw new IllegalArgumentException("File path must start with '/'");
         }
@@ -163,12 +162,18 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public void updateFileGroup(File file, Group group) {
-        Validate.notNull(file.getParent());
-        Validate.notNull(file.getPath());
+    public void updateFileGroup(File dir, String email, Group group) {
+        Validate.notNull(dir.getParent());
+        Validate.notNull(dir.getPath());
 
-        file.setGroup(group);
-        fileRepository.save(file);
+        dir.setGroup(group);
+        fileRepository.save(dir);
+
+        List<File> fileList = fileRepository.getFileListByFilePathAndEmail(email, dir.getPath());
+        for (File file : fileList) {
+            file.setGroup(group);
+            fileRepository.save(file);
+        }
     }
 
     void validateAccess(User user, File folder) {

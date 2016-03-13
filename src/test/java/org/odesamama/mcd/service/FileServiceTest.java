@@ -1,7 +1,10 @@
 package org.odesamama.mcd.service;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.UUID;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.odesamama.mcd.Application;
@@ -18,10 +21,7 @@ import org.odesamama.mcd.services.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import java.io.IOException;
 import org.springframework.transaction.annotation.Transactional;
-import java.net.URISyntaxException;
 
 /**
  * Created by starnakin on 16.10.2015.
@@ -76,7 +76,7 @@ public class FileServiceTest {
 
         // Null out parent file
         file.setParent(null);
-        fileService.updateFileGroup(file, fileGroup);
+        fileService.updateFileGroup(file, owner.getUserEmail(), fileGroup);
     }
 
 }

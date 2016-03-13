@@ -24,5 +24,5 @@ public interface FileService {
 
     InputStream getFile(String filePath, String email) throws URISyntaxException, IOException;
 
-    void updateFileGroup(File file, Group group);
+    void updateFileGroup(File file, String email, Group group);
 }
