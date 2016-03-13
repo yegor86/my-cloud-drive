@@ -34,8 +34,6 @@ public class FileControllerTest {
 
     private static final String UPLOAD_FILE = "/files/upload";
 
-    private static final String GET_USER_FILES = "/users/files/%s";
-
     private static final String LOAD_FILE = "/files/download/%s/%s";
 
     private static final String USER_EMAIL = "admin@mail.com";
@@ -47,10 +45,6 @@ public class FileControllerTest {
     private static final String SHARE_FOLDER = "/files/sharefolder";
 
     public static final String GET_FILE_LIST_BY_PATH = "/files/list/%s/%s";
-
-    private static final String CREATE_USER = "/users/create";
-
-    private static final String GET_USER = "/users/%s";
 
     @Before
     public void setup() {
@@ -79,8 +73,7 @@ public class FileControllerTest {
             given().parameter("filePath", folderName + "/" + System.nanoTime() + file.getName()).multiPart(file)
                     .parameter("email", USER_EMAIL).post(UPLOAD_FILE).then().statusCode(HttpStatus.SC_OK);
 
-            Assert.assertTrue(
-                    when().get(String.format(GET_USER_FILES, USER_EMAIL)).asString().contains(file.getName()));
+            Assert.assertTrue(when().get(String.format(GET_FILE_LIST_BY_PATH, USER_EMAIL,folderName)).asString().contains(file.getName()));
 
         }
 
