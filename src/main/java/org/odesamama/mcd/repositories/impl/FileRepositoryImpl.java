@@ -37,23 +37,21 @@ public class FileRepositoryImpl implements CustomFileRepository {
     public File getFileInfoByFilePathAndEmail(String email, String path) {
         path = StringUtils.trimToEmpty(path);
 
-        List<Object[]> fileList = entityManager
-                .createNativeQuery(
-                        "select f.file_id, f.file_uid, f.file_name, f.file_path, f.file_size, f.create_date, f.update_date, f.is_folder, f.extension, f.group_id, u.user_id, u.user_uid, u.user_name, u.last_name"
-                                + " from files f join public.users u on u.user_id = f.owner_id where u.user_email = :email and f.file_path = :path")
+        @SuppressWarnings("unchecked")
+        List<Object[]> resultList = entityManager
+                .createNativeQuery("select * from public.get_file_info_by_filepath_and_email(:email, :path)")
                 .setParameter("email", email).setParameter("path", path).getResultList();
 
-        if (!fileList.isEmpty()) {
-            File file = recordToFile(fileList.get(0));
+        if (!resultList.isEmpty()) {
+            File file = recordToFile(resultList.get(0));
             file.getOwner().setUserEmail(email);
-            file.getGroup().setGroupName(email);
             return file;
         }
         return null;
     }
 
     @Override
-    public List<File> getFilesListForGivenDirectoryPath(String email, String path) {
+    public List<File> getFileListByFilePathAndEmail(String email, String path) {
 
         File parentFolder = getFileInfoByFilePathAndEmail(email, path);
 
@@ -114,15 +112,15 @@ public class FileRepositoryImpl implements CustomFileRepository {
 
     private File recordToFile(Object[] record) {
         User owner = new User();
-        owner.setUserId(((BigInteger) record[10]).longValue());
-        if (record.length > 11) {
-            owner.setUserUid((String) record[11]);
-        }
+        owner.setUserId(((BigInteger) record[11]).longValue());
         if (record.length > 12) {
-            owner.setUserName((String) record[12]);
+            owner.setUserUid((String) record[12]);
         }
         if (record.length > 13) {
-            owner.setLastName((String) record[13]);
+            owner.setUserName((String) record[13]);
+        }
+        if (record.length > 14) {
+            owner.setLastName((String) record[14]);
         }
 
         Group group = new Group();
@@ -141,6 +139,12 @@ public class FileRepositoryImpl implements CustomFileRepository {
         file.setExtension((String) record[8]);
         file.setOwner(owner);
         file.setGroup(group);
+
+        if (record[10] != null) {
+            File parent = new File();
+            parent.setId(((BigInteger) record[10]).longValue());
+            file.setParent(parent);
+        }
 
         return file;
     }

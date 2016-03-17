@@ -171,7 +171,6 @@ test {
     include 'org/odesamama/mcd/service/**'
     exclude 'org/odesamama/mcd/multitenancy/**'
     include 'org/odesamama/mcd/repositories/**'
-    include 'org/odesamama/mcd/HDFSTests.java'
 
     beforeTest { descriptor ->
         logger.lifecycle("Running test: " + descriptor)

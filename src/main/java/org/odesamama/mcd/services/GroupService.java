@@ -9,10 +9,6 @@ public interface GroupService {
 
     Group getOrCreateGroup(File file);
 
-    Group getOrCreateGroup(String email);
-
-    Group getOrCreateGroup(User user);
-
     void addUserToGroup(User user, Group group, Permissions perms);
 
     void removeUserFromGroup(User user, Group group);
