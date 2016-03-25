@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.odesamama.mcd.domain.File;
 import org.odesamama.mcd.domain.Group;
 import org.odesamama.mcd.domain.User;
+import org.odesamama.mcd.domain.UserBuilder;
 import org.odesamama.mcd.exeptions.NoSuchResourceException;
 import org.odesamama.mcd.exeptions.UserNotExistsException;
 import org.odesamama.mcd.repositories.CustomFileRepository;
@@ -69,13 +70,13 @@ public class FileRepositoryImpl implements CustomFileRepository {
 
         List<User> userList = jdbcTemplate.query("select * from public.users where user_email = ?",
                 new Object[] { email }, (rs, rowNum) -> {
-                    User user = new User();
-                    user.setUserId(rs.getLong("user_id"));
-                    user.setUserEmail(email);
-                    user.setUserName(rs.getString("user_name"));
-                    user.setLastName(rs.getString("last_name"));
+                    UserBuilder builder = new UserBuilder();
+                    builder.userId(rs.getLong("user_id"))
+                            .userEmail(email)
+                            .userName(rs.getString("user_name"))
+                            .lastName(rs.getString("last_name"));
 
-                    return user;
+                    return builder.build();
                 });
         if (userList.isEmpty()) {
             throw new UserNotExistsException("User was not found with email: " + email);
