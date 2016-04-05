@@ -1,5 +1,8 @@
 package org.odesamama.mcd.service;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.odesamama.mcd.Application;
@@ -10,9 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
 
 /**
  * Created by starnakin on 04.04.2016.
@@ -31,7 +31,7 @@ public class UserServiceTest {
         userService.createUser(createUser());
     }
 
-    private User createUser(){
-        return (new UserBuilder()).lastName("Last Name").userName("Name").userEmail("test@email.com").build();
+    private User createUser() {
+        return new UserBuilder().lastName("Last Name").userName("First Name").userEmail("test@email.com").build();
     }
 }

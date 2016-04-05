@@ -9,4 +9,8 @@ public interface CustomUserRepository {
     User findByEmail(String email);
 
     Iterable<String> findUsers();
+
+    Long saveUser(User user);
+
+    boolean updateUser(User user);
 }

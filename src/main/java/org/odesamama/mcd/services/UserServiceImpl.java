@@ -3,9 +3,12 @@ package org.odesamama.mcd.services;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import org.odesamama.mcd.domain.Group;
+import org.odesamama.mcd.domain.GroupBuilder;
 import org.odesamama.mcd.domain.User;
 import org.odesamama.mcd.exeptions.EmailTakenException;
 import org.odesamama.mcd.multitenancy.TenantManager;
+import org.odesamama.mcd.repositories.GroupRepository;
 import org.odesamama.mcd.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +27,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private GroupRepository groupRepository;
+
     private TenantManager tenantManager = new TenantManager();
 
     @Override
@@ -41,9 +47,14 @@ public class UserServiceImpl implements UserService {
             throw new EmailTakenException();
         }
 
-        User savedUser = userRepository.save(user);
+        userRepository.saveUser(user);
+        Group group = new GroupBuilder().owner(user).groupName(user.getUserEmail()).build();
+        groupRepository.saveGroup(group);
+        user.setGroup(group);
+        userRepository.updateUser(user);
+
         tenantManager.create(user.getUserEmail());
-        fileService.createHomeDirectoryForUser(savedUser);
-        return savedUser;
+        fileService.createHomeDirectoryForUser(user);
+        return user;
     }
 }
