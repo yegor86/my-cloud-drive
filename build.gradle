@@ -107,7 +107,7 @@ task register << {
 	    def uuid = java.util.UUID.randomUUID().toString()	    
 	    def query = """insert into public.users (user_uid, user_name, user_email, create_date, update_date, last_name, group_id)
 	          |select '$uuid', '$firstname', '$email', current_timestamp, current_timestamp, '$lastname', 0
-	          |where not exists(select 1 from users where user_email = '$email')
+	          |where not exists(select 1 from public.users where user_email = '$email')
 	          |""".stripMargin()    
 	    
 	    sql.execute(query)

@@ -6,6 +6,8 @@ import org.odesamama.mcd.domain.Group;
 import org.odesamama.mcd.repositories.CustomGroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 public class GroupRepositoryImpl implements CustomGroupRepository {
 
@@ -19,6 +21,7 @@ public class GroupRepositoryImpl implements CustomGroupRepository {
         return !groupList.isEmpty() ? groupList.get(0) : null;
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public Long saveGroup(Group group) {
 
