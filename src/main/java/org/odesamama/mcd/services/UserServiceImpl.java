@@ -7,11 +7,11 @@ import org.odesamama.mcd.domain.Group;
 import org.odesamama.mcd.domain.GroupBuilder;
 import org.odesamama.mcd.domain.User;
 import org.odesamama.mcd.exeptions.EmailTakenException;
-import org.odesamama.mcd.multitenancy.TenantManager;
 import org.odesamama.mcd.repositories.GroupRepository;
 import org.odesamama.mcd.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -30,8 +30,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private GroupRepository groupRepository;
 
-    private TenantManager tenantManager = new TenantManager();
-
     @Override
     public boolean checkEmailUnique(String email) {
         if (userRepository.findByEmail(email) != null) {
@@ -41,7 +39,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public User createUser(User user) throws IOException, URISyntaxException {
         if (user.getUserEmail() != null && !checkEmailUnique(user.getUserEmail())) {
             throw new EmailTakenException();
@@ -53,7 +51,6 @@ public class UserServiceImpl implements UserService {
         user.setGroup(group);
         userRepository.updateUser(user);
 
-        tenantManager.create(user.getUserEmail());
         fileService.createHomeDirectoryForUser(user);
         return user;
     }

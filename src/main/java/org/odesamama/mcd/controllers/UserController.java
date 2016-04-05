@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 
 import org.odesamama.mcd.domain.File;
 import org.odesamama.mcd.domain.User;
+import org.odesamama.mcd.multitenancy.TenantManager;
 import org.odesamama.mcd.repositories.UserRepository;
 import org.odesamama.mcd.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    private TenantManager tenantManager = new TenantManager();
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public Iterable<String> getUserList() {
@@ -53,6 +56,7 @@ public class UserController {
     @RequestMapping(value = "/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> createUser(@RequestBody User user) throws IOException, URISyntaxException {
         User created = userService.createUser(user);
+        tenantManager.create(user.getUserEmail());
         return new ResponseEntity<User>(created, HttpStatus.OK);
     }
 

@@ -9,8 +9,6 @@ import org.odesamama.mcd.repositories.CustomUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by starnakin on 27.09.2015.
@@ -42,7 +40,6 @@ public class UserRepositoryImpl implements CustomUserRepository {
                 (rs, rowNum) -> rs.getString("nspname"));
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public Long saveUser(User user) {
 
@@ -56,7 +53,6 @@ public class UserRepositoryImpl implements CustomUserRepository {
         return userId;
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public boolean updateUser(User user) {
 
